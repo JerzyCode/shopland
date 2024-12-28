@@ -3,5 +3,11 @@
         xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation = "http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <include file = "001_shopland_create_user_table_2024_12_28.xml" relativeToChangelogFile = "true"/>
+
+
+    <changeSet author = "jerzyb" id = "2024_12_28_pg" dbms = "postgresql, h2" failOnError = "true">
+        <comment>Create tables</comment>
+        <sqlFile path = "db/create_tables.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
