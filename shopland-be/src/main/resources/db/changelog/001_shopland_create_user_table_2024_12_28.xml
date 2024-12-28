@@ -7,7 +7,7 @@
 
     <changeSet author = "jerzyb" id = "2024_12_28_pg" dbms = "postgresql, h2" failOnError = "true">
         <comment>Create tables</comment>
-        <sqlFile path = "db/create_tables.sql"/>
+        <sqlFile dbms = "postgresql" path = "db/create_tables.sql"/>
     </changeSet>
 
 </databaseChangeLog>
