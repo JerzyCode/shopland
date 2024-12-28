@@ -1,4 +1,4 @@
-CREATE TYPE user_role AS ENUM ('Admin', 'User');
+CREATE TYPE user_role AS ENUM ('ADMIN', 'USER');
 
 CREATE TABLE IF NOT EXISTS users
 (

@@ -13,3 +13,11 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog.master.xml
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    org.springframework: INFO
+    agh.boksaoracz: DEBUG
