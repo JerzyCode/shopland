@@ -1,3 +1,15 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /shopland
 spring:
   application:
     name: shopland
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shopland
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: admin
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog.master.xml
