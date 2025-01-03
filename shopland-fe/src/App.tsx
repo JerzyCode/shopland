@@ -1,9 +1,13 @@
 import './App.css'
+import {Route, Routes} from "react-router-dom";
+import {Home} from "./app/pages/Home.tsx";
 
 function App() {
     return (
-        <div className="card" style={{width: '18rem'}}>
-
+        <div>
+            <Routes>
+                <Route path="/home" element={<Home/>}/>
+            </Routes>
         </div>
     )
 }
