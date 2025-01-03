@@ -16,3 +16,15 @@ export const getUser = (): User | null => {
 export const removeUser = (): void => {
     localStorage.removeItem(USER_KEY);
 };
+
+export const isLoggedIn = (): boolean => {
+    const storedUser = localStorage.getItem(USER_KEY);
+    if (!storedUser) {
+        return false;
+    }
+
+    const user = JSON.parse(storedUser);
+    return !!(user && user.username && user.role);
+
+
+}
