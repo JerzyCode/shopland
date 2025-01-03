@@ -10,16 +10,23 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: admin
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   liquibase:
-    enabled: true
+    enabled: false
     change-log: classpath:db/changelog/db.changelog.master.xml
+  security:
+    jwt:
+      secret-key: 2afbfac8fe49058f12874b6c7f92d6c842d2ec05f621f9b3b4ba437eb8f7b338
+      expiration-time: 31536000000
 
 logging:
   level:
     org.springframework: INFO
     agh.boksaoracz: DEBUG
-
-security:
-  jwt:
-    secret-key: 2afbfac8fe49058f12874b6c7f92d6c842d2ec05f621f9b3b4ba437eb8f7b338
-    expiration-time: 31536000000
