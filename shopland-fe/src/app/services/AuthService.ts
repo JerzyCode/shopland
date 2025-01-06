@@ -9,7 +9,8 @@ export const saveUser = (user: User): void => {
 
 export const getUser = (): User | null => {
     const storedUser = localStorage.getItem(USER_KEY);
-    return storedUser ? JSON.parse(storedUser) : new User('Guest', Role.GUEST);
+    // return storedUser ? JSON.parse(storedUser) : new User('Guest', Role.GUEST);
+    return storedUser ? JSON.parse(storedUser) : new User('User', Role.USER);
 };
 
 

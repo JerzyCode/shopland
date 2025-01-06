@@ -24,6 +24,7 @@ export function AuthProvider({children}: AuthProviderProps) {
     }, []);
 
     const logout = () => {
+        console.debug('logout()')
         removeUser();
         setUser(null);
     };

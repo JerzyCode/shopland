@@ -23,7 +23,7 @@ function RoleProtectedRoute({element, requiredRole}: RoleProtectedRouteProps) {
     }
 
     if (!user || !user.hasRole(requiredRole)) {
-        return <Navigate to="/"/>;
+        return <Navigate to="/shopland"/>;
     }
 
     return element;
