@@ -1,50 +1,93 @@
 import {FormEvent, useState} from "react";
-import {loginUser} from "../services/AuthService.ts";
 import {Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
-import {useNavigate} from "react-router-dom";
 import Typography from "@mui/material/Typography";
-import {useAuth} from "../context/AuthContext.tsx";
+import {registerUser} from "../services/AuthService.ts";
 
-interface LoginPopupProps {
+
+interface RegisterPopupProps {
     open: boolean;
     onClose: () => void;
     onSuccess: () => void;
 }
 
-export function LoginPopup({open, onClose, onSuccess}: LoginPopupProps) {
-    const {login} = useAuth();
-    const navigate = useNavigate();
+export function RegisterPopup({open, onClose, onSuccess}: RegisterPopupProps) {
     const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [surname, setSurname] = useState('');
+    const [age, setAge] = useState(0);
     const [password, setPassword] = useState('');
+    const [passwordAgain, setPasswordAgain] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
+
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
-        setIsLoading(true);
-        setErrorMessage('');
+        if (!isInputValid()) {
+            return;
+        }
 
         try {
-            const response = await loginUser({email, password});
-
-            if (response.status === 200) {
-                login(response.body);
-                onClose();
-                clearInputs()
-                navigate('/shopland');
-                onSuccess()
-            } else if (response.status === 403) {
-                setErrorMessage('Invalid email or password. Please try again.');
-            } else {
-                setErrorMessage('An unexpected error occurred. Please try again later.');
+            const response = await registerUser({
+                email: email,
+                name: name,
+                surname: surname,
+                password: password,
+                age: age
+            })
+            if (response.status === 400) {
+                setErrorMessage('Email is already taken :(')
             }
+            if (response.status === 200) {
+                onSuccess();
+                handleClosePopup();
+            }
+
         } catch (error) {
             setErrorMessage('An unexpected error occurred. Please try again later.');
         } finally {
             setPassword('')
+            setPasswordAgain('')
             setIsLoading(false);
         }
     };
+
+    const isInputValid = (): boolean => {
+        const emailRegex = /\S+@\S+\.\S+/;
+
+        if (password != passwordAgain) {
+            setErrorMessage("Password do not match.");
+            setPassword('');
+            setPasswordAgain('');
+            return false;
+        }
+
+        if (email.length < 3) {
+            setErrorMessage("Email must contain at least 3 characters.");
+            return false;
+        }
+
+        if (!emailRegex.test(email)) {
+            setErrorMessage("Email is invalid.");
+            return false;
+        }
+        if (name.length < 3) {
+            setErrorMessage("Name must contain at least 3 characters.");
+            return false;
+        }
+        if (surname.length < 3) {
+            setErrorMessage("Surname must contain at least 3 characters.");
+            return false;
+        }
+
+        if (password.length < 8) {
+            setErrorMessage("Password must contain at least 8 characters.");
+            return false;
+        }
+
+
+        return true;
+    }
 
 
     const handleClosePopup = () => {
@@ -54,6 +97,10 @@ export function LoginPopup({open, onClose, onSuccess}: LoginPopupProps) {
 
     const clearInputs = () => {
         setEmail('');
+        setSurname('')
+        setName('')
+        setAge(0)
+        setPasswordAgain('')
         setPassword('');
     }
 
@@ -72,7 +119,7 @@ export function LoginPopup({open, onClose, onSuccess}: LoginPopupProps) {
                 },
             }}
         >
-            <DialogTitle sx={{fontSize: '1.8rem', fontWeight: 'bold', textAlign: 'center'}}>Login</DialogTitle>
+            <DialogTitle sx={{fontSize: '1.8rem', fontWeight: 'bold', textAlign: 'center'}}>Register</DialogTitle>
             <DialogContent>
                 <form onSubmit={handleSubmit}>
                     <Box sx={{display: 'flex', flexDirection: 'column', gap: 4, marginTop: 2}}>
@@ -91,8 +138,37 @@ export function LoginPopup({open, onClose, onSuccess}: LoginPopupProps) {
                         <TextField
                             label="Email"
                             variant="outlined"
+                            type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            fullWidth
+                            required
+                            sx={textFieldStyles}
+                        />
+                        <TextField
+                            label="Name"
+                            variant="outlined"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            fullWidth
+                            required
+                            sx={textFieldStyles}
+                        />
+                        <TextField
+                            label="Surname"
+                            variant="outlined"
+                            value={surname}
+                            onChange={(e) => setSurname(e.target.value)}
+                            fullWidth
+                            required
+                            sx={textFieldStyles}
+                        />
+                        <TextField
+                            label="Age"
+                            variant="outlined"
+                            type="number"
+                            value={age}
+                            onChange={(e) => setAge(e.target.value ? parseInt(e.target.value) : 0)}
                             fullWidth
                             required
                             sx={textFieldStyles}
@@ -103,6 +179,16 @@ export function LoginPopup({open, onClose, onSuccess}: LoginPopupProps) {
                             variant="outlined"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            fullWidth
+                            required
+                            sx={textFieldStyles}
+                        />
+                        <TextField
+                            label="Repeat Password"
+                            type="password"
+                            variant="outlined"
+                            value={passwordAgain}
+                            onChange={(e) => setPasswordAgain(e.target.value)}
                             fullWidth
                             required
                             sx={textFieldStyles}
@@ -142,10 +228,12 @@ export function LoginPopup({open, onClose, onSuccess}: LoginPopupProps) {
                         },
                     }}
                 >
-                    {isLoading ? 'Logging in...' : 'Login'}
+                    {isLoading ? 'Registering...' : 'Register'}
                 </Button>
             </DialogActions>
+
         </Dialog>
+
     );
 }
 

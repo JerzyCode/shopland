@@ -1,5 +1,5 @@
 import {Role, User} from "../models/User.ts";
-import {LoginRequest} from "../models/LoginRequest.ts";
+import {LoginRequest, RegisterRequest} from "../models/Requests.ts";
 import {ServerResponse} from "../models/ServerResponse.ts";
 import axios from 'axios';
 import {SERVER_URL} from "../../env.ts";
@@ -7,6 +7,7 @@ import {SERVER_URL} from "../../env.ts";
 
 const USER_KEY = 'LOGGED_USER';
 const LOGIN_URL = SERVER_URL + '/rest/api/auth/login'
+const REGISTER_URL = SERVER_URL + '/rest/api/auth/register'
 
 export const saveUser = (user: User): void => {
     localStorage.setItem(USER_KEY, JSON.stringify(user));
@@ -47,3 +48,25 @@ export const loginUser = async (request: LoginRequest): Promise<ServerResponse> 
         }
     }
 }
+
+export const registerUser = async (request: RegisterRequest): Promise<ServerResponse> => {
+    console.log(`loginUser(), request=${JSON.stringify(request)}, url=${REGISTER_URL}`);
+
+    try {
+        const response = await axios.post(REGISTER_URL, request);
+
+        if (response.status === 400) {
+            return new ServerResponse(response.status, undefined);
+        }
+
+        return new ServerResponse(response.status, undefined);
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            return new ServerResponse(error.response?.status || 500, error.response?.data);
+        } else {
+            console.error(error);
+            return new ServerResponse(500, {message: 'Unknown error occurred'});
+        }
+    }
+}
+

@@ -16,6 +16,8 @@ import {useAuth} from "../context/AuthContext.tsx";
 import {Role} from "../models/User.ts";
 import {useNavigate} from 'react-router-dom';
 import {LoginPopup} from "./LoginPopup.tsx";
+import {RegisterPopup} from "./RegisterPopup.tsx";
+import {Alert, Snackbar} from "@mui/material";
 
 
 const pages = [
@@ -29,6 +31,11 @@ export function AppHeader() {
     const isUserLoggedIn = user && user.role !== Role.GUEST;
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const [loginPopupOpened, setLoginPopupOpened] = useState(false);
+    const [registerPopupOpened, setRegisterPopupOpened] = useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [severity, setSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('success');
+
 
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
@@ -42,11 +49,34 @@ export function AppHeader() {
     const handleLogout = () => {
         logout()
         navigate('/shopland');
+        setSnackbarMessage('You successfully logged out!!');
+        setSeverity('success');
+        setOpenSnackbar(true);
     }
 
-    const handleOpenPopup = () => setLoginPopupOpened(true);
-    const handleClosePopup = () => setLoginPopupOpened(false);
+    const handleOpenLoginPopup = () => setLoginPopupOpened(true);
+    const handleCloseLoginPopup = () => setLoginPopupOpened(false);
 
+    const handleOpenRegisterPopup = () => setRegisterPopupOpened(true);
+    const handleCloseRegisterPopup = () => setRegisterPopupOpened(false);
+
+
+    const onRegisterSuccess = () => {
+        handleOpenLoginPopup();
+        setSnackbarMessage('You are successfully registered!!');
+        setSeverity('success');
+        setOpenSnackbar(true);
+    }
+
+    const onLoginSuccess = () => {
+        setSnackbarMessage('You are successfully logged in!!');
+        setSeverity('success');
+        setOpenSnackbar(true);
+    }
+
+    const handleCloseSnackbar = () => {
+        setOpenSnackbar(false);
+    };
 
     return (
         <>
@@ -114,10 +144,10 @@ export function AppHeader() {
                                     </MenuItem>
                                 ) : (
                                     <>
-                                        <MenuItem onClick={handleOpenPopup}>
+                                        <MenuItem onClick={handleOpenLoginPopup}>
                                             <Typography sx={{textAlign: 'center'}}>Login</Typography>
                                         </MenuItem>
-                                        <MenuItem>
+                                        <MenuItem onClick={handleOpenRegisterPopup}>
                                             <Typography sx={{textAlign: 'center'}}>Register</Typography>
                                         </MenuItem>
                                     </>
@@ -127,7 +157,21 @@ export function AppHeader() {
                     </Toolbar>
                 </Container>
             </AppBar>
-            <LoginPopup open={loginPopupOpened} onClose={handleClosePopup}/>
+            <LoginPopup open={loginPopupOpened} onClose={handleCloseLoginPopup} onSuccess={onLoginSuccess}/>
+            <RegisterPopup open={registerPopupOpened} onClose={handleCloseRegisterPopup} onSuccess={onRegisterSuccess}/>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={8000}
+                onClose={handleCloseSnackbar}
+            >
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity={severity}
+                    sx={{width: '100%'}}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </>
     );
 }
