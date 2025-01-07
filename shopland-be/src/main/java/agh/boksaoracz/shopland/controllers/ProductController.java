@@ -3,7 +3,6 @@ package agh.boksaoracz.shopland.controllers;
 import agh.boksaoracz.shopland.model.dto.ProductDto;
 import agh.boksaoracz.shopland.model.dto.ProductLightDto;
 import agh.boksaoracz.shopland.service.ProductService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest/api/products")
 @RequiredArgsConstructor
-public class ProductsController {
+public class ProductController {
 
     private final ProductService productService;
 
