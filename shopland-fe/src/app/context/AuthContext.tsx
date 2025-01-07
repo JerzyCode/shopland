@@ -1,10 +1,11 @@
 import {createContext, ReactNode, useContext, useEffect, useState} from 'react';
-import {getUser, removeUser} from '../services/AuthService.ts';
+import {getUser, removeUser, saveUser} from '../services/AuthService.ts';
 import {User} from "../models/User.ts";
 
 interface AuthContextType {
     user: User | null;
     logout: () => void;
+    login: (user: User) => void;
 }
 
 interface AuthProviderProps {
@@ -29,8 +30,13 @@ export function AuthProvider({children}: AuthProviderProps) {
         setUser(null);
     };
 
+    const login = (user: User) => {
+        saveUser(user);
+        setUser(user);
+    };
+
     return (
-        <AuthContext.Provider value={{user, logout}}>
+        <AuthContext.Provider value={{user, logout, login}}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,9 +1,13 @@
 export class User {
-    username: string;
+    jwtToken: string;
+    name: string;
+    email: string;
     role: Role;
 
-    constructor(username: string, role: Role) {
-        this.username = username;
+    constructor(jwtToken: string, name: string, email: string, role: Role) {
+        this.jwtToken = jwtToken;
+        this.name = name;
+        this.email = email;
         this.role = role;
     }
 

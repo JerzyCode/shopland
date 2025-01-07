@@ -1,7 +1,12 @@
 import {Role, User} from "../models/User.ts";
+import {LoginRequest} from "../models/LoginRequest.ts";
+import {ServerResponse} from "../models/ServerResponse.ts";
+import axios from 'axios';
+import {SERVER_URL} from "../../env.ts";
 
 
 const USER_KEY = 'LOGGED_USER';
+const LOGIN_URL = SERVER_URL + '/rest/api/auth/login'
 
 export const saveUser = (user: User): void => {
     localStorage.setItem(USER_KEY, JSON.stringify(user));
@@ -9,8 +14,12 @@ export const saveUser = (user: User): void => {
 
 export const getUser = (): User | null => {
     const storedUser = localStorage.getItem(USER_KEY);
-    // return storedUser ? JSON.parse(storedUser) : new User('Guest', Role.GUEST);
-    return storedUser ? JSON.parse(storedUser) : new User('User', Role.USER);
+    if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        return new User(parsedUser.jwtToken, parsedUser.name, parsedUser.email, parsedUser.role);
+    }
+
+    return new User('', 'guest', 'guest', Role.GUEST);
 };
 
 
@@ -18,14 +27,23 @@ export const removeUser = (): void => {
     localStorage.removeItem(USER_KEY);
 };
 
-export const isLoggedIn = (): boolean => {
-    const storedUser = localStorage.getItem(USER_KEY);
-    if (!storedUser) {
-        return false;
+export const loginUser = async (request: LoginRequest): Promise<ServerResponse> => {
+    console.log(`loginUser(), request=${JSON.stringify(request)}, url=${LOGIN_URL}`);
+    try {
+        const response = await axios.post(LOGIN_URL, request);
+
+        const user = response.data;
+        if (!user) {
+            return new ServerResponse(500, {message: 'Unknown error occurred'});
+        }
+
+        return new ServerResponse(response.status, user);
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            return new ServerResponse(error.response?.status || 500, error.response?.data);
+        } else {
+            console.error(error);
+            return new ServerResponse(500, {message: 'Unknown error occurred'});
+        }
     }
-
-    const user = JSON.parse(storedUser);
-    return !!(user && user.username && user.role);
-
-
 }
