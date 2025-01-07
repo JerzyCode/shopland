@@ -6,6 +6,7 @@ import agh.boksaoracz.shopland.model.entity.Cart;
 import agh.boksaoracz.shopland.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,4 +26,12 @@ public class CartController {
     ResponseEntity<Cart> createCart(@PathVariable Long userId, @RequestBody CartProductCommand cartProductCommand) {
         return ResponseEntity.ok(cartService.addOrUpdateCart(userId, cartProductCommand));
     }
+
+    @DeleteMapping("/{productId}")
+    ResponseEntity<Void> deleteCart(@PathVariable Long productId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        cartService.removeCart(email, productId);
+        return ResponseEntity.ok().build();
+    }
+
 }

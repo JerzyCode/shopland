@@ -15,8 +15,10 @@ import agh.boksaoracz.shopland.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartService {
@@ -51,14 +53,14 @@ public class CartService {
             throw new UserNotFoundException("User with id: %d not found".formatted(userId));
         }
 
-        if(!productRepository.existsById(productId)) {
+        if (!productRepository.existsById(productId)) {
             throw new ProductNotFoundException("Product with id: %d not found".formatted(productId));
         }
 
         Cart existingCart = cartRepository.findByUserIdAndProductId(userId, productId).orElse(null);
 
         if (existingCart != null) {
-            existingCart.setQuantity(existingCart.getQuantity() + quantity);
+            existingCart.setQuantity(quantity);
             return cartRepository.save(existingCart);
         } else {
             User user = entityManager.getReference(User.class, userId);
@@ -74,4 +76,24 @@ public class CartService {
             return cartRepository.save(newCart);
         }
     }
+
+    @Transactional
+    public void removeCart(String email, Long productId) {
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User with email: %s not found".formatted(email));
+        }
+
+        Long userId = user.get().getId();
+        Optional<Cart> cartDto = cartRepository.findByUserIdAndProductId(userId, productId);
+
+        if (cartDto.isEmpty()) {
+            throw new ProductNotFoundException("Product with id: %d not found for user with id: %d".formatted(productId, userId));
+        }
+
+        cartRepository.deleteByUserIdAndProductId(userId, productId);
+    }
+
+
 }
