@@ -8,38 +8,52 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private UserDetailsService userDetailsService;
+  private UserDetailsService userDetailsService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf().disable()
-                .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers("/rest/api/auth/**").permitAll();
-                    authorize.anyRequest().authenticated();
-                }).httpBasic(Customizer.withDefaults());
-        return http.build();
-    }
+    http
+        .csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests((authorize) -> {
+          authorize.requestMatchers("/rest/api/auth/**").permitAll();
+          authorize.anyRequest().authenticated();
+        })
+        .httpBasic(Customizer.withDefaults())
+        .cors(cors -> cors
+            .configurationSource(request -> {
+              var corsConfiguration = new CorsConfiguration();
+              corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
+              corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+              corsConfiguration.setAllowedHeaders(List.of("*"));
+              corsConfiguration.setAllowCredentials(true);
+              return corsConfiguration;
+            }));
+    return http.build();
+  }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    return configuration.getAuthenticationManager();
+  }
 }
 
