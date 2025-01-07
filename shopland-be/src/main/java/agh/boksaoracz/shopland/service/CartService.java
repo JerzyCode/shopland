@@ -12,8 +12,6 @@ import agh.boksaoracz.shopland.model.entity.embeddedKeys.CartId;
 import agh.boksaoracz.shopland.repository.CartRepository;
 import agh.boksaoracz.shopland.repository.ProductRepository;
 import agh.boksaoracz.shopland.repository.UserRepository;
-import jakarta.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +21,6 @@ import java.util.Optional;
 @Service
 public class CartService {
 
-    @Autowired
-    private EntityManager entityManager;
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
@@ -35,7 +31,9 @@ public class CartService {
         this.userRepository = userRepository;
     }
 
-    public CartDto getCartByUserId(Long userId) {
+    public CartDto getCartByEmail(String email) {
+        Long userId = userRepository.findByEmail(email).get().getId();
+
         List<Cart> carts = cartRepository.findByUserId(userId);
         List<ProductCartDto> productsInCart = carts.stream()
                 .map(Cart::cartToProductCartDto)
@@ -43,17 +41,16 @@ public class CartService {
         return new CartDto(productsInCart);
     }
 
-    public Cart addOrUpdateCart(Long userId, CartProductCommand cartProductCommand) {
+    public Cart addOrUpdateCart(String email, CartProductCommand cartProductCommand) {
 
+        User user = userRepository.findByEmail(email).get();
+        Long userId = user.getId();
         Long productId = cartProductCommand.productId();
         Integer quantity = cartProductCommand.quantity();
         CartId cartId = new CartId(userId, productId);
 
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundException("User with id: %d not found".formatted(userId));
-        }
-
-        if (!productRepository.existsById(productId)) {
+        Product product = productRepository.findById(productId).orElse(null);
+        if (product == null) {
             throw new ProductNotFoundException("Product with id: %d not found".formatted(productId));
         }
 
@@ -63,9 +60,6 @@ public class CartService {
             existingCart.setQuantity(quantity);
             return cartRepository.save(existingCart);
         } else {
-            User user = entityManager.getReference(User.class, userId);
-            Product product = entityManager.getReference(Product.class, productId);
-
             Cart newCart = Cart.builder()
                     .id(cartId)
                     .user(user)

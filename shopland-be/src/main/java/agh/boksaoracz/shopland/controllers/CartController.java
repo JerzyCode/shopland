@@ -16,15 +16,16 @@ public class CartController {
 
     private final CartService cartService;
 
-    //TODO: zrobić get i post po tokenie
-    @GetMapping("/{userId}")
-    ResponseEntity<CartDto> getCartByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(cartService.getCartByUserId(userId));
+    @GetMapping("/")
+    ResponseEntity<CartDto> getCartByUserId() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(cartService.getCartByEmail(email));
     }
 
-    @PostMapping("/{userId}")
-    ResponseEntity<Cart> createCart(@PathVariable Long userId, @RequestBody CartProductCommand cartProductCommand) {
-        return ResponseEntity.ok(cartService.addOrUpdateCart(userId, cartProductCommand));
+    @PostMapping("/")
+    ResponseEntity<Cart> createCart(@RequestBody CartProductCommand cartProductCommand) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(cartService.addOrUpdateCart(email, cartProductCommand));
     }
 
     @DeleteMapping("/{productId}")
