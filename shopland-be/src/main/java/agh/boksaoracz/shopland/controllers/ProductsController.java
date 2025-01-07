@@ -1,13 +1,12 @@
 package agh.boksaoracz.shopland.controllers;
 
+import agh.boksaoracz.shopland.model.dto.ProductDto;
 import agh.boksaoracz.shopland.model.dto.ProductLightDto;
 import agh.boksaoracz.shopland.service.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,4 +22,8 @@ public class ProductsController {
         return ResponseEntity.ok(productService.getProducts(name));
     }
 
+    @GetMapping("/{id}")
+    ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
 }

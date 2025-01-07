@@ -1,5 +1,6 @@
 package agh.boksaoracz.shopland.model.entity;
 
+import agh.boksaoracz.shopland.model.dto.ProductDto;
 import agh.boksaoracz.shopland.model.dto.ProductLightDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,5 +42,9 @@ public class Product {
 
     public ProductLightDto productToProductLightDto() {
         return new ProductLightDto(getId(), getName(), getShortDescription(), getPrice());
+    }
+
+    public ProductDto productToProductDto() {
+        return new ProductDto(getName(), getShortDescription(), getAvailableAmount());
     }
 }

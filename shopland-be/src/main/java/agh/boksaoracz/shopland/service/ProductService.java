@@ -1,7 +1,9 @@
 package agh.boksaoracz.shopland.service;
 
+import agh.boksaoracz.shopland.model.dto.ProductDto;
 import agh.boksaoracz.shopland.model.dto.ProductLightDto;
 import agh.boksaoracz.shopland.model.entity.Product;
+import agh.boksaoracz.shopland.exception.ProductNotFoundException;
 import agh.boksaoracz.shopland.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,12 @@ public class ProductService {
         return products.stream()
                 .map(Product::productToProductLightDto)
                 .collect(Collectors.toList());
+    }
+
+    public ProductDto getProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product with ID " + id + " not found"));
+        return product.productToProductDto();
     }
 
 }
