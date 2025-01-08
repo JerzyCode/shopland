@@ -4,6 +4,7 @@ import agh.boksaoracz.shopland.model.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -38,9 +39,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(ALLOWED_URLS).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/rest/api/opinion/products/**").permitAll()
+                        .requestMatchers("/rest/api/opinion/**").hasRole(UserRole.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, "/rest/api/opinion/**").hasRole(UserRole.USER.name())
+                        .requestMatchers(HttpMethod.GET, "/rest/api/opinion/user").hasRole(UserRole.USER.name())
+                        .requestMatchers(HttpMethod.PUT, "/rest/api/opinion/**").hasRole(UserRole.USER.name())
                         .requestMatchers(USER_ALLOWED_URLS).hasRole(UserRole.USER.name())
                         .requestMatchers(ADMIN_ALLOWED_URLS).hasRole(UserRole.ADMIN.name())
+                        .requestMatchers(ALLOWED_URLS).permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
