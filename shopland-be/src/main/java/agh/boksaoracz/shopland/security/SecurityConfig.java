@@ -22,8 +22,6 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-  private UserDetailsService userDetailsService;
-
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
@@ -36,6 +34,7 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests((authorize) -> {
           authorize.requestMatchers("/rest/api/auth/**").permitAll();
+          authorize.requestMatchers("/rest/api/products/**").permitAll();
           authorize.anyRequest().authenticated();
         })
         .httpBasic(Customizer.withDefaults())
