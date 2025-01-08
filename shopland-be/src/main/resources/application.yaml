@@ -2,6 +2,7 @@ server:
   port: 8080
   servlet:
     context-path: /shopland
+
 spring:
   application:
     name: shopland
@@ -21,10 +22,11 @@ spring:
   liquibase:
     enabled: false
     change-log: classpath:db/changelog/db.changelog.master.xml
-  security:
-    jwt:
-      secret-key: 2afbfac8fe49058f12874b6c7f92d6c842d2ec05f621f9b3b4ba437eb8f7b338
-      expiration-time: 31536000000
+
+security:
+  jwt:
+    secret-key: 2afbfac8fe49058f12874b6c7f92d6c842d2ec05f621f9b3b4ba437eb8f7b338
+    expiration-time: 31536000000
 
 logging:
   level:

@@ -41,15 +41,14 @@ public class CartService {
 
     public Cart addOrUpdateCart(Long userId, CartProductCommand cartProductCommand) {
 
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundException(String.format("User with id=%s not exist.", userId)));
         Long productId = cartProductCommand.productId();
         Integer quantity = cartProductCommand.quantity();
         CartId cartId = new CartId(userId, productId);
 
-        Product product = productRepository.findById(productId).orElse(null);
-        if (product == null) {
-            throw new ProductNotFoundException("Product with id: %d not found".formatted(productId));
-        }
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Product with id: %d not found".formatted(productId)));
 
         Cart existingCart = cartRepository.findByUserIdAndProductId(userId, productId).orElse(null);
 
