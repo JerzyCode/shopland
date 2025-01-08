@@ -1,5 +1,6 @@
 package agh.boksaoracz.shopland.model.entity;
 
+import agh.boksaoracz.shopland.model.dto.ProductFromOrderDto;
 import agh.boksaoracz.shopland.model.entity.embeddedKeys.OrderProductId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,5 +31,9 @@ public class OrderProduct {
 
     @Column
     private Integer quantity;
+
+    public ProductFromOrderDto orderProductToProductFromOrderDto() {
+        return product.productToProductFromOrderDto(quantity);
+    }
 
 }

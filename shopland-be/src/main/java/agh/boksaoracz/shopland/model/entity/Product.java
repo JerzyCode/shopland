@@ -1,6 +1,7 @@
 package agh.boksaoracz.shopland.model.entity;
 
 import agh.boksaoracz.shopland.model.dto.ProductDto;
+import agh.boksaoracz.shopland.model.dto.ProductFromOrderDto;
 import agh.boksaoracz.shopland.model.dto.ProductLightDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 
 @Entity
-@Check(constraints = "price >= 0 AND available_amount >= 0")
+@Check(constraints = "unitPrice >= 0 AND available_amount >= 0")
 @Table(name = "products")
 @Builder
 @Data
@@ -46,5 +47,9 @@ public class Product {
 
     public ProductDto productToProductDto() {
         return new ProductDto(getName(), getShortDescription(), getAvailableAmount());
+    }
+
+    public ProductFromOrderDto productToProductFromOrderDto(int quntity) {
+        return new ProductFromOrderDto(id, name, longDescription, price, image, quntity);
     }
 }
