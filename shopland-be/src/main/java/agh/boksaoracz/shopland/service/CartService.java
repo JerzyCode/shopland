@@ -31,9 +31,7 @@ public class CartService {
         this.userRepository = userRepository;
     }
 
-    public CartDto getCartByEmail(String email) {
-        Long userId = userRepository.findByEmail(email).get().getId();
-
+    public CartDto getCartByEmail(Long userId) {
         List<Cart> carts = cartRepository.findByUserId(userId);
         List<ProductCartDto> productsInCart = carts.stream()
                 .map(Cart::cartToProductCartDto)

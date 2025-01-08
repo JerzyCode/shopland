@@ -1,26 +1,28 @@
 package agh.boksaoracz.shopland.service;
 
-import agh.boksaoracz.shopland.model.entity.User;
+import agh.boksaoracz.shopland.model.dto.LoginCommand;
+import agh.boksaoracz.shopland.model.dto.LoginResponse;
+import agh.boksaoracz.shopland.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final UserRepository repository;
 
-    public AuthService(AuthenticationManager authenticationManager, JwtService jwtService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
+    public LoginResponse authenticateUser(LoginCommand loginCommand) {
+        var user = repository.findByEmail(loginCommand.email()).orElseThrow(() -> new BadCredentialsException("Bad Credentials"));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginCommand.email(), loginCommand.password()));
+        var jwtToken = jwtService.buildToken(user);
+        return new LoginResponse(jwtToken, user.getName(), user.getEmail(), user.getRole());
     }
 
-    public String authenticateUser(User user) {
-        try {
-            return jwtService.buildToken(user);
-        } catch (BadCredentialsException ex) {
-            throw new AuthenticationException("Invalid username or password."){};
-        }
-    }
+
+
 }
