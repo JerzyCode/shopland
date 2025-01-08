@@ -16,7 +16,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("/")
+    @GetMapping
     ResponseEntity<List<ProductLightDto>> getProducts(@RequestParam(required = false) String name) {
         return ResponseEntity.ok(productService.getProducts(name));
     }

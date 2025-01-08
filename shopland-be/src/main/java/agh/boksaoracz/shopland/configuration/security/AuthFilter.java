@@ -1,4 +1,4 @@
-package agh.boksaoracz.shopland.security;
+package agh.boksaoracz.shopland.configuration.security;
 
 import agh.boksaoracz.shopland.service.JwtService;
 import jakarta.servlet.FilterChain;
