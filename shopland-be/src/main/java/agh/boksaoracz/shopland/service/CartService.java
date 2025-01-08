@@ -39,10 +39,9 @@ public class CartService {
         return new CartDto(productsInCart);
     }
 
-    public Cart addOrUpdateCart(String email, CartProductCommand cartProductCommand) {
+    public Cart addOrUpdateCart(Long userId, CartProductCommand cartProductCommand) {
 
-        User user = userRepository.findByEmail(email).get();
-        Long userId = user.getId();
+        User user = userRepository.findById(userId).get();
         Long productId = cartProductCommand.productId();
         Integer quantity = cartProductCommand.quantity();
         CartId cartId = new CartId(userId, productId);
@@ -70,14 +69,13 @@ public class CartService {
     }
 
     @Transactional
-    public void removeCart(String email, Long productId) {
-        Optional<User> user = userRepository.findByEmail(email);
+    public void removeCart(Long userId, Long productId) {
+        Optional<User> user = userRepository.findById(userId);
 
         if (user.isEmpty()) {
-            throw new UserNotFoundException("User with email: %s not found".formatted(email));
+            throw new UserNotFoundException("User with id: %d not found".formatted(userId));
         }
 
-        Long userId = user.get().getId();
         Optional<Cart> cartDto = cartRepository.findByUserIdAndProductId(userId, productId);
 
         if (cartDto.isEmpty()) {

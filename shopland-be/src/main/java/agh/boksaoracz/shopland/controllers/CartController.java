@@ -30,14 +30,14 @@ public class CartController {
 
     @PostMapping("/")
     ResponseEntity<Cart> addProductToCart(@RequestBody CartProductCommand cartProductCommand) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(cartService.addOrUpdateCart(email, cartProductCommand));
+        Long userId = getUserId();
+        return ResponseEntity.ok(cartService.addOrUpdateCart(userId, cartProductCommand));
     }
 
     @DeleteMapping("/{productId}")
     ResponseEntity<Void> deleteProductCart(@PathVariable Long productId) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        cartService.removeCart(email, productId);
+        Long userId = getUserId();
+        cartService.removeCart(userId, productId);
         return ResponseEntity.ok().build();
     }
 
