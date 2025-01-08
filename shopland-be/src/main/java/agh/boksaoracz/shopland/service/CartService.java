@@ -5,16 +5,16 @@ import agh.boksaoracz.shopland.exception.UserNotFoundException;
 import agh.boksaoracz.shopland.model.dto.CartDto;
 import agh.boksaoracz.shopland.model.dto.CartProductCommand;
 import agh.boksaoracz.shopland.model.dto.ProductCartDto;
-import agh.boksaoracz.shopland.model.entity.Cart;
-import agh.boksaoracz.shopland.model.entity.Product;
-import agh.boksaoracz.shopland.model.entity.User;
+import agh.boksaoracz.shopland.model.entity.*;
 import agh.boksaoracz.shopland.model.entity.embeddedKeys.CartId;
-import agh.boksaoracz.shopland.repository.CartRepository;
-import agh.boksaoracz.shopland.repository.ProductRepository;
-import agh.boksaoracz.shopland.repository.UserRepository;
+import agh.boksaoracz.shopland.model.entity.embeddedKeys.OrderProductId;
+import agh.boksaoracz.shopland.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,11 +24,15 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final OrderProductRepository orderProductRepository;
 
-    public CartService(CartRepository cartRepository, ProductRepository productRepository, UserRepository userRepository) {
+    public CartService(CartRepository cartRepository, ProductRepository productRepository, UserRepository userRepository, OrderRepository orderRepository, OrderProductRepository orderProductRepository) {
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
+        this.orderProductRepository = orderProductRepository;
     }
 
     public CartDto getCartByEmail(Long userId) {
@@ -82,6 +86,35 @@ public class CartService {
         }
 
         cartRepository.deleteByUserIdAndProductId(userId, productId);
+    }
+
+    @Transactional
+    public void acceptCart(Long userId) {
+        List<Cart> carts = cartRepository.findByUserId(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with id: %d not found".formatted(userId)));
+
+        double summaryPrice = carts.stream()
+                .mapToDouble(cart -> cart.getQuantity() * cart.getProduct().getPrice())
+                .sum();
+
+        Order order = Order.builder()
+                .date(Timestamp.valueOf(LocalDateTime.now()))
+                .user(user)
+                .summaryPrice(summaryPrice)
+                .build();
+        orderRepository.save(order);
+        for(Cart cart : carts) {
+            OrderProduct orderProduct = OrderProduct.builder()
+                    .id(new OrderProductId(order.getId(), cart.getProduct().getId()))
+                    .order(order)
+                    .product(cart.getProduct())
+                    .quantity(cart.getQuantity())
+                    .build();
+            orderProductRepository.save(orderProduct);
+            cartRepository.delete(cart);
+        }
+
     }
 
 

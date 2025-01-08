@@ -36,4 +36,11 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/accept")
+    ResponseEntity<Void> acceptProductCart() {
+        Long userId = headerService.getUserId();
+        cartService.acceptCart(userId);
+        return ResponseEntity.ok().build();
+    }
+
 }
