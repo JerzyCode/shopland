@@ -23,13 +23,13 @@ public class CartController {
     }
 
     @PostMapping("/")
-    ResponseEntity<Cart> createCart(@RequestBody CartProductCommand cartProductCommand) {
+    ResponseEntity<Cart> addProductToCart(@RequestBody CartProductCommand cartProductCommand) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.ok(cartService.addOrUpdateCart(email, cartProductCommand));
     }
 
     @DeleteMapping("/{productId}")
-    ResponseEntity<Void> deleteCart(@PathVariable Long productId) {
+    ResponseEntity<Void> deleteProductCart(@PathVariable Long productId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         cartService.removeCart(email, productId);
         return ResponseEntity.ok().build();
