@@ -2,7 +2,7 @@ package agh.boksaoracz.shopland.controllers;
 
 import agh.boksaoracz.shopland.model.dto.CartDto;
 import agh.boksaoracz.shopland.model.dto.CartProductCommand;
-import agh.boksaoracz.shopland.model.entity.Cart;
+import agh.boksaoracz.shopland.model.dto.ProductCartDto;
 import agh.boksaoracz.shopland.service.CartService;
 import agh.boksaoracz.shopland.service.HeaderService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class CartController {
     }
 
     @PostMapping
-    ResponseEntity<Cart> addProductToCart(@RequestBody CartProductCommand cartProductCommand) {
+    ResponseEntity<ProductCartDto> addProductToCart(@RequestBody CartProductCommand cartProductCommand) {
         Long userId = headerService.getUserId();
         return ResponseEntity.ok(cartService.addOrUpdateCart(userId, cartProductCommand));
     }

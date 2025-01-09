@@ -11,7 +11,7 @@ import org.hibernate.annotations.Check;
 
 @Entity
 @Table(name = "carts")
-@Check(constraints = "quantity >= 0")
+@Check(constraints = "quantity > 0")
 @Builder
 @Data
 @AllArgsConstructor

@@ -1,5 +1,6 @@
 package agh.boksaoracz.shopland.service;
 
+import agh.boksaoracz.shopland.exception.InsufficientAmountOfProductException;
 import agh.boksaoracz.shopland.exception.ProductNotFoundException;
 import agh.boksaoracz.shopland.exception.UserNotFoundException;
 import agh.boksaoracz.shopland.model.dto.CartDto;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -43,22 +43,31 @@ public class CartService {
         return new CartDto(productsInCart);
     }
 
-    public Cart addOrUpdateCart(Long userId, CartProductCommand cartProductCommand) {
+    public ProductCartDto addOrUpdateCart(Long userId, CartProductCommand cartProductCommand) {
 
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new UserNotFoundException(String.format("User with id=%s not exist.", userId)));
         Long productId = cartProductCommand.productId();
-        Integer quantity = cartProductCommand.quantity();
+        int quantity = cartProductCommand.quantity();
         CartId cartId = new CartId(userId, productId);
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product with id: %d not found".formatted(productId)));
 
+        if (product.getAvailableAmount() < quantity) {
+            throw new InsufficientAmountOfProductException("Insufficient amount of products in stock to add to cart.");
+        }
+        else {
+            product.setAvailableAmount(product.getAvailableAmount() - quantity);
+            productRepository.save(product);
+        }
+
         Cart existingCart = cartRepository.findByUserIdAndProductId(userId, productId).orElse(null);
 
         if (existingCart != null) {
             existingCart.setQuantity(quantity);
-            return cartRepository.save(existingCart);
+            cartRepository.save(existingCart);
+            return existingCart.cartToProductCartDto();
         } else {
             Cart newCart = Cart.builder()
                     .id(cartId)
@@ -67,7 +76,9 @@ public class CartService {
                     .quantity(quantity)
                     .build();
 
-            return cartRepository.save(newCart);
+            cartRepository.save(newCart);
+
+            return newCart.cartToProductCartDto();
         }
     }
 
@@ -79,12 +90,16 @@ public class CartService {
             throw new UserNotFoundException("User with id: %d not found".formatted(userId));
         }
 
-        Optional<Cart> cartDto = cartRepository.findByUserIdAndProductId(userId, productId);
+        Optional<Cart> cart = cartRepository.findByUserIdAndProductId(userId, productId);
 
-        if (cartDto.isEmpty()) {
+        if (cart.isEmpty()) {
             throw new ProductNotFoundException("Product with id: %d not found for user with id: %d".formatted(productId, userId));
         }
 
+
+        var product = cart.get().getProduct();
+        product.setAvailableAmount(product.getAvailableAmount() - cart.get().getQuantity());
+        productRepository.save(product);
         cartRepository.deleteByUserIdAndProductId(userId, productId);
     }
 
