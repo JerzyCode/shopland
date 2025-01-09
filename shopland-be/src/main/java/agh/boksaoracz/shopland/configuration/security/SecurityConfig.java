@@ -40,7 +40,7 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.GET, "/rest/api/opinion/products/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/rest/api/opinion/**").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())
+                        .requestMatchers("/rest/api/opinion/**").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name()) //TODO przetestować z palca
                         .requestMatchers(USER_ALLOWED_URLS).hasRole(UserRole.USER.name())
                         .requestMatchers(ADMIN_ALLOWED_URLS).hasRole(UserRole.ADMIN.name())
                         .requestMatchers(ALLOWED_URLS).permitAll()
