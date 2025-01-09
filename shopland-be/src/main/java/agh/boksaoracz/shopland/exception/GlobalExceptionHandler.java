@@ -11,7 +11,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<String> handleProductNotFound(ProductNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     @ExceptionHandler(UserNotFoundException.class)
@@ -32,5 +32,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InsufficientAmountOfProductException.class)
     public ResponseEntity<String> handleInsufficientAmountOfProduct(InsufficientAmountOfProductException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(OpinionException.class)
+    public ResponseEntity<String> handleUserAlreadyAddedOpinion(OpinionException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(OpinionScoreOutOfBoundsException.class)
+    public ResponseEntity<String> handleOpinionScoreOutOfBoundsException(OpinionScoreOutOfBoundsException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(OpinionDoesNotExistsException.class)
+    public ResponseEntity<String> handleOpinionScoreOutOfBoundsException(OpinionDoesNotExistsException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }
