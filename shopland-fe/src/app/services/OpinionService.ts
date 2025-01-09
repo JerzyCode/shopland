@@ -113,7 +113,7 @@ export const deleteOpinion = async (opinionId: number): Promise<ServerResponse> 
     }
 
     try {
-        const response = await axios.put(`${URL}/${opinionId}`, {
+        const response = await axios.delete(`${URL}/${opinionId}`, {
             headers: {
                 'Authorization': 'Bearer ' + user?.jwtToken
             },
