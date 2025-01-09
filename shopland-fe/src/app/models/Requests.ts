@@ -25,3 +25,8 @@ export class RegisterRequest {
         this.password = password;
     }
 }
+
+
+export class OpinionCommand {
+
+}
