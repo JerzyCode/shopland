@@ -4,6 +4,7 @@ import agh.boksaoracz.shopland.exception.*;
 import agh.boksaoracz.shopland.model.dto.OpinionCommand;
 import agh.boksaoracz.shopland.model.dto.OpinionDto;
 import agh.boksaoracz.shopland.model.entity.Opinion;
+import agh.boksaoracz.shopland.model.entity.UserRole;
 import agh.boksaoracz.shopland.repository.OpinionRepository;
 import agh.boksaoracz.shopland.repository.ProductRepository;
 import agh.boksaoracz.shopland.repository.UserRepository;
@@ -76,7 +77,19 @@ public class OpinionService {
         opinionRepository.save(opinion);
     }
 
-    public void deleteOpinion(Long opinionId) {
+    public void deleteOpinion(Long opinionId, Long userId) {
+        var opinion = opinionRepository.findById(opinionId)
+                .orElseThrow(() ->
+                        new OpinionDoesNotExistsException(String.format("Opinion with id=%s doesnt exist.", opinionId)));
+
+        if (opinion.getUser().getRole() == UserRole.ADMIN) {
+            opinionRepository.deleteById(opinionId);
+        }
+
+        if (!Objects.equals(opinion.getUser().getId(), userId)) {
+            throw new OpinionException("Opinion doesn't belong to user!");
+        }
+
         opinionRepository.deleteById(opinionId);
     }
 
