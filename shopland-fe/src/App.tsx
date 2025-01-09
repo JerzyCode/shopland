@@ -6,7 +6,7 @@ import {Role} from "./app/models/User.ts";
 import {AppHeader} from "./app/components/AppHeader.tsx";
 import {Container} from "@mui/material";
 import {OrderHistory} from "./app/pages/OrderHistory.tsx";
-import {Reviews} from "./app/pages/Reviews.tsx";
+import {OpinionsPage} from "./app/pages/OpinionsPage.tsx";
 
 
 function App() {
@@ -18,8 +18,8 @@ function App() {
                     <Route path="/shopland" element={<Home/>}/>
                     <Route path="/shopland/order-history"
                            element={<RoleProtectedRoute element={<OrderHistory/>} requiredRole={Role.USER}/>}/>
-                    <Route path="/shopland/reviews"
-                           element={<RoleProtectedRoute element={<Reviews/>} requiredRole={Role.USER}/>}/>
+                    <Route path="/shopland/opinions"
+                           element={<RoleProtectedRoute element={<OpinionsPage/>} requiredRole={Role.USER}/>}/>
                     <Route path="*" element={<Navigate to="/shopland"/>}/>
                 </Routes>
             </Container>

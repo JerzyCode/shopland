@@ -22,7 +22,12 @@ function RoleProtectedRoute({element, requiredRole}: RoleProtectedRouteProps) {
         return <div>Loading ...</div>
     }
 
+    if (user && user.hasRole(Role.ADMIN)) {
+        return element;
+    }
+
     if (!user || !user.hasRole(requiredRole)) {
+        console.log('WRONG ROLE! REDIRECTING, role=' + user?.role)
         return <Navigate to="/shopland"/>;
     }
 

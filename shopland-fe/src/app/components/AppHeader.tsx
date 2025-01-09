@@ -21,7 +21,7 @@ import {Alert, Snackbar} from "@mui/material";
 
 
 const pages = [
-    {label: 'Reviews', href: '/shopland/reviews'},
+    {label: 'My Opinions', href: '/shopland/opinions'},
     {label: 'Order History', href: '/shopland/order-history'},
 ];
 

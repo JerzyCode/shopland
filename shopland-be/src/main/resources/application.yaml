@@ -31,4 +31,6 @@ security:
 logging:
   level:
     org.springframework: INFO
+#    org.springframework.security: DEBUG
+#    org.springframework.web: DEBUG
     agh.boksaoracz: DEBUG
