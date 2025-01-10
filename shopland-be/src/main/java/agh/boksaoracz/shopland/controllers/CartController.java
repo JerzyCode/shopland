@@ -20,7 +20,7 @@ public class CartController {
     @GetMapping
     ResponseEntity<CartDto> getCartByUserId() {
         Long userId = headerService.getUserId();
-        return ResponseEntity.ok(cartService.getCartByEmail(userId));
+        return ResponseEntity.ok(cartService.getCartByUserId(userId));
     }
 
     @PostMapping

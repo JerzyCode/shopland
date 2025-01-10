@@ -35,7 +35,7 @@ public class CartService {
         this.orderProductRepository = orderProductRepository;
     }
 
-    public CartDto getCartByEmail(Long userId) {
+    public CartDto getCartByUserId(Long userId) {
         List<Cart> carts = cartRepository.findByUserId(userId);
         List<ProductCartDto> productsInCart = carts.stream()
                 .map(Cart::cartToProductCartDto)
@@ -46,13 +46,13 @@ public class CartService {
     public ProductCartDto addOrUpdateCart(Long userId, CartProductCommand cartProductCommand) {
 
         User user = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundException(String.format("User with id=%s not exist.", userId)));
+                new UserNotFoundException(String.format("User with productId=%s not exist.", userId)));
         Long productId = cartProductCommand.productId();
         int quantity = cartProductCommand.quantity();
         CartId cartId = new CartId(userId, productId);
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product with id: %d not found".formatted(productId)));
+                .orElseThrow(() -> new ProductNotFoundException("Product with productId: %d not found".formatted(productId)));
 
         if (product.getAvailableAmount() < quantity) {
             throw new InsufficientAmountOfProductException("Insufficient amount of products in stock to add to cart.");
@@ -87,13 +87,13 @@ public class CartService {
         Optional<User> user = userRepository.findById(userId);
 
         if (user.isEmpty()) {
-            throw new UserNotFoundException("User with id: %d not found".formatted(userId));
+            throw new UserNotFoundException("User with productId: %d not found".formatted(userId));
         }
 
         Optional<Cart> cart = cartRepository.findByUserIdAndProductId(userId, productId);
 
         if (cart.isEmpty()) {
-            throw new ProductNotFoundException("Product with id: %d not found for user with id: %d".formatted(productId, userId));
+            throw new ProductNotFoundException("Product with productId: %d not found for user with productId: %d".formatted(productId, userId));
         }
 
 
@@ -107,7 +107,7 @@ public class CartService {
     public void acceptCart(Long userId) {
         List<Cart> carts = cartRepository.findByUserId(userId);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User with id: %d not found".formatted(userId)));
+                .orElseThrow(() -> new UserNotFoundException("User with productId: %d not found".formatted(userId)));
 
         double summaryPrice = carts.stream()
                 .mapToDouble(cart -> cart.getQuantity() * cart.getProduct().getPrice())
