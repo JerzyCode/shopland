@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {SetStateAction, useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -18,6 +18,7 @@ import {useNavigate} from 'react-router-dom';
 import {LoginPopup} from "./LoginPopup.tsx";
 import {RegisterPopup} from "./RegisterPopup.tsx";
 import {Alert, Snackbar} from "@mui/material";
+import {ShoppingCart} from "./ShoppingCart.tsx";
 
 
 const pages = [
@@ -74,6 +75,12 @@ export function AppHeader() {
         setOpenSnackbar(true);
     }
 
+    const openSnackBar = (message: string, severity: SetStateAction<"error" | "success" | "info" | "warning">) => {
+        setSnackbarMessage(message);
+        setSeverity(severity);
+        setOpenSnackbar(true);
+    }
+
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false);
     };
@@ -117,6 +124,10 @@ export function AppHeader() {
                         </Box>
 
                         <Box sx={{flexGrow: 0, display: 'flex', alignItems: 'center'}}>
+                            {isUserLoggedIn && (
+                                <ShoppingCart openSnackBar={openSnackBar}/>
+                            )}
+
                             {isUserLoggedIn && (
                                 <Typography
                                     sx={{

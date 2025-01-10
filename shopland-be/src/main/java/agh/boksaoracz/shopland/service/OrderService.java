@@ -37,7 +37,7 @@ public class OrderService {
         Order order = orderRepository.findById(orderId).orElse(null);
 
         if (order == null || !order.getUser().getId().equals(userId)) {
-            throw new OrderNotFoundException("Order with id " + orderId + " not found for user " + userId);
+            throw new OrderNotFoundException("Order with productId " + orderId + " not found for user " + userId);
         }
 
         List<OrderProduct> orderProducts = orderProductService.findAllByOrderId(order.getId());

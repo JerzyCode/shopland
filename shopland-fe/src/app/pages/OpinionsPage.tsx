@@ -1,3 +1,4 @@
+// @ts-ignore
 import React, {useEffect, useState} from "react";
 import {Box, CircularProgress, Container, List, ListItem, Typography} from "@mui/material";
 import {getOpinionsForUser} from "../services/OpinionService.ts";
