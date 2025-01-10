@@ -41,7 +41,7 @@ public class Product {
     private String imageUrl;
 
     public ProductLightDto productToProductLightDto() {
-        return new ProductLightDto(getId(), getName(), getShortDescription(), getPrice());
+        return new ProductLightDto(getId(), getName(), getShortDescription(), getPrice(), getImageUrl());
     }
 
     public ProductDto productToProductDto() {

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Builder
-class ProductSummary {
+public class ProductSummary {
     private Long id;
     private String title;
     private String description;
