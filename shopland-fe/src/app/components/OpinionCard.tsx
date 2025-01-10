@@ -74,7 +74,7 @@ export function OpinionCard({
 
     const handleValueChange = (event: any) => {
         const value = parseInt(event.target.value, 10);
-        if (value >= 0 && value <= 5) {
+        if (value > 0 && value <= 5) {
             setEditedValue(value);
         }
     };

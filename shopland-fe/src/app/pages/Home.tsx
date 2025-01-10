@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
-import {Box, Container, Grid2, Paper, TextField, Typography} from "@mui/material";
+import {Container, Grid2, TextField, Typography} from "@mui/material";
+import {ProductCard} from "../components/ProductCard.tsx";
 
 interface Product {
     id: number;
@@ -36,41 +37,9 @@ export function Home() {
             />
             <Grid2 container spacing={1}>
                 {products.length > 0 ? (
-                    products.slice(0, 20).map((product) => (
+                    products.slice(0, 21).map((product) => (
                         <Grid2 size={4} key={product.id}>
-                            <Paper elevation={3} sx={{padding: 2, textAlign: 'center', minHeight: 200}}>
-                                <Typography variant="h6">{product.name}</Typography>
-                                <Box
-                                    sx={{
-                                        width: '100%',
-                                        height: '250px',
-                                        backgroundColor: '#f0f0f0',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        borderRadius: '4px',
-                                        marginBottom: 2,
-                                        overflow: 'hidden',
-                                    }}
-                                >
-                                    {product.imageUrl ? (
-                                        <img
-                                            src={product.imageUrl}
-                                            alt={product.name}
-                                            style={{
-                                                maxWidth: '100%',
-                                                maxHeight: '100%',
-                                                objectFit: 'contain',
-                                            }}
-                                        />
-                                    ) : (
-                                        <Typography variant="caption" color="textSecondary">No photo</Typography>
-                                    )}
-                                </Box>
-                                <Typography variant="subtitle1" color="primary">
-                                    {product.price.toFixed(2)} zł
-                                </Typography>
-                            </Paper>
+                            <ProductCard product={product} />
                         </Grid2>
                     ))
                 ) : (
