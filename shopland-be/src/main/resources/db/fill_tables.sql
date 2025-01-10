@@ -1,7 +1,7 @@
 INSERT INTO products (name, short_description, long_description, price, available_amount, image)
-VALUES ('Product 1', 'Short description for Product 1', 'Detailed description of Product 1', 100, 10, NULL),
-       ('Product 2', 'Short description for Product 2', 'Detailed description of Product 2', 200, 5, NULL),
-       ('Product 3', 'Short description for Product 3', 'Detailed description of Product 3', 150, 20, NULL);
+VALUES ('ProductBox 1', 'Short description for ProductBox 1', 'Detailed description of ProductBox 1', 100, 10, NULL),
+       ('ProductBox 2', 'Short description for ProductBox 2', 'Detailed description of ProductBox 2', 200, 5, NULL),
+       ('ProductBox 3', 'Short description for ProductBox 3', 'Detailed description of ProductBox 3', 150, 20, NULL);
 
 INSERT INTO opinions (product_id, user_id, value, content)
 VALUES (1, 1, 4, 'Good product, meets expectations.'),
