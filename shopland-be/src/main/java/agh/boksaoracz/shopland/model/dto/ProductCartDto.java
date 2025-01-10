@@ -1,4 +1,4 @@
 package agh.boksaoracz.shopland.model.dto;
 
-public record ProductCartDto(Long id, int quantity, double price) {
+public record ProductCartDto(Long productId, String productName, int quantity, double price) {
 }

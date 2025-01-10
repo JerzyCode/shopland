@@ -34,8 +34,8 @@ public class Cart {
     @Column(nullable = false)
     private Integer quantity;
 
-    public ProductCartDto cartToProductCartDto(){
-        return new ProductCartDto(product.getId(), quantity, product.getPrice() * quantity);
+    public ProductCartDto cartToProductCartDto() {
+        return new ProductCartDto(product.getId(), product.getName(), quantity, product.getPrice() * quantity);
     }
 
 }

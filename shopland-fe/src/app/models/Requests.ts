@@ -25,3 +25,15 @@ export class RegisterRequest {
         this.password = password;
     }
 }
+
+
+export class OpinionCommand {
+    content: string;
+    score: number;
+
+
+    constructor(content: string, score: number) {
+        this.content = content;
+        this.score = score;
+    }
+}

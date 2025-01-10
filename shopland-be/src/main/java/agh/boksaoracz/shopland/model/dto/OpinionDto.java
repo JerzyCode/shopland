@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class OpinionDto {
     private Long id;
+    private Long productId;
     private String productName;
     private String userEmail;
     private String content;
@@ -17,6 +18,7 @@ public class OpinionDto {
     public static OpinionDto of(Opinion opinion) {
         return OpinionDto.builder()
                 .id(opinion.getId())
+                .productId(opinion.getProduct().getId())
                 .productName(opinion.getProduct().getName())
                 .userEmail(opinion.getUser().getEmail())
                 .content(opinion.getContent())
