@@ -16,7 +16,7 @@ CREATE TABLE products
     long_description  VARCHAR(1024),
     price             INTEGER CHECK (price >= 0),
     available_amount  INTEGER CHECK (available_amount >= 0),
-    image             BYTEA
+    image_url             VARCHAR(1000)
 );
 
 CREATE TABLE carts

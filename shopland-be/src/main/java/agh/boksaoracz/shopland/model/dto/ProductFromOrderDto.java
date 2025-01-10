@@ -1,13 +1,11 @@
 package agh.boksaoracz.shopland.model.dto;
 
-import jakarta.persistence.Lob;
-
-public record ProductFromOrderDto (
+public record ProductFromOrderDto(
         Long productId,
         String name,
         String description,
         Double unitPrice,
-        @Lob byte[] image,
+        String imageUrl,
         int quantity
-){
+) {
 }
