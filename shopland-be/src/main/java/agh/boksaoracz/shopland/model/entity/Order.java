@@ -27,7 +27,7 @@ public class Order {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     User user;
 
-    @Column()
+    @Column
     double summaryPrice;
 
     @Column(nullable = false)

@@ -29,6 +29,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
+    @ExceptionHandler(InsufficientAmountOfProductException.class)
+    public ResponseEntity<String> handleInsufficientAmountOfProduct(InsufficientAmountOfProductException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
     @ExceptionHandler(OpinionException.class)
     public ResponseEntity<String> handleUserAlreadyAddedOpinion(OpinionException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());

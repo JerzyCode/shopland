@@ -1,20 +1,20 @@
 package agh.boksaoracz.shopland.service;
 
+import agh.boksaoracz.shopland.exception.InsufficientAmountOfProductException;
 import agh.boksaoracz.shopland.exception.ProductNotFoundException;
 import agh.boksaoracz.shopland.exception.UserNotFoundException;
 import agh.boksaoracz.shopland.model.dto.CartDto;
 import agh.boksaoracz.shopland.model.dto.CartProductCommand;
 import agh.boksaoracz.shopland.model.dto.ProductCartDto;
-import agh.boksaoracz.shopland.model.entity.Cart;
-import agh.boksaoracz.shopland.model.entity.Product;
-import agh.boksaoracz.shopland.model.entity.User;
+import agh.boksaoracz.shopland.model.entity.*;
 import agh.boksaoracz.shopland.model.entity.embeddedKeys.CartId;
-import agh.boksaoracz.shopland.repository.CartRepository;
-import agh.boksaoracz.shopland.repository.ProductRepository;
-import agh.boksaoracz.shopland.repository.UserRepository;
+import agh.boksaoracz.shopland.model.entity.embeddedKeys.OrderProductId;
+import agh.boksaoracz.shopland.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,11 +24,15 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final OrderProductRepository orderProductRepository;
 
-    public CartService(CartRepository cartRepository, ProductRepository productRepository, UserRepository userRepository) {
+    public CartService(CartRepository cartRepository, ProductRepository productRepository, UserRepository userRepository, OrderRepository orderRepository, OrderProductRepository orderProductRepository) {
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
+        this.orderProductRepository = orderProductRepository;
     }
 
     public CartDto getCartByEmail(Long userId) {
@@ -39,22 +43,31 @@ public class CartService {
         return new CartDto(productsInCart);
     }
 
-    public Cart addOrUpdateCart(Long userId, CartProductCommand cartProductCommand) {
+    public ProductCartDto addOrUpdateCart(Long userId, CartProductCommand cartProductCommand) {
 
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new UserNotFoundException(String.format("User with id=%s not exist.", userId)));
         Long productId = cartProductCommand.productId();
-        Integer quantity = cartProductCommand.quantity();
+        int quantity = cartProductCommand.quantity();
         CartId cartId = new CartId(userId, productId);
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product with id: %d not found".formatted(productId)));
 
+        if (product.getAvailableAmount() < quantity) {
+            throw new InsufficientAmountOfProductException("Insufficient amount of products in stock to add to cart.");
+        }
+        else {
+            product.setAvailableAmount(product.getAvailableAmount() - quantity);
+            productRepository.save(product);
+        }
+
         Cart existingCart = cartRepository.findByUserIdAndProductId(userId, productId).orElse(null);
 
         if (existingCart != null) {
             existingCart.setQuantity(quantity);
-            return cartRepository.save(existingCart);
+            cartRepository.save(existingCart);
+            return existingCart.cartToProductCartDto();
         } else {
             Cart newCart = Cart.builder()
                     .id(cartId)
@@ -63,7 +76,9 @@ public class CartService {
                     .quantity(quantity)
                     .build();
 
-            return cartRepository.save(newCart);
+            cartRepository.save(newCart);
+
+            return newCart.cartToProductCartDto();
         }
     }
 
@@ -75,13 +90,46 @@ public class CartService {
             throw new UserNotFoundException("User with id: %d not found".formatted(userId));
         }
 
-        Optional<Cart> cartDto = cartRepository.findByUserIdAndProductId(userId, productId);
+        Optional<Cart> cart = cartRepository.findByUserIdAndProductId(userId, productId);
 
-        if (cartDto.isEmpty()) {
+        if (cart.isEmpty()) {
             throw new ProductNotFoundException("Product with id: %d not found for user with id: %d".formatted(productId, userId));
         }
 
+
+        var product = cart.get().getProduct();
+        product.setAvailableAmount(product.getAvailableAmount() - cart.get().getQuantity());
+        productRepository.save(product);
         cartRepository.deleteByUserIdAndProductId(userId, productId);
+    }
+
+    @Transactional
+    public void acceptCart(Long userId) {
+        List<Cart> carts = cartRepository.findByUserId(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with id: %d not found".formatted(userId)));
+
+        double summaryPrice = carts.stream()
+                .mapToDouble(cart -> cart.getQuantity() * cart.getProduct().getPrice())
+                .sum();
+
+        Order order = Order.builder()
+                .date(Timestamp.valueOf(LocalDateTime.now()))
+                .user(user)
+                .summaryPrice(summaryPrice)
+                .build();
+        orderRepository.save(order);
+        for(Cart cart : carts) {
+            OrderProduct orderProduct = OrderProduct.builder()
+                    .id(new OrderProductId(order.getId(), cart.getProduct().getId()))
+                    .order(order)
+                    .product(cart.getProduct())
+                    .quantity(cart.getQuantity())
+                    .build();
+            orderProductRepository.save(orderProduct);
+            cartRepository.delete(cart);
+        }
+
     }
 
 
