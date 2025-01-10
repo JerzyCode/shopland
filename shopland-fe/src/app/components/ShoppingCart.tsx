@@ -106,24 +106,33 @@ export function ShoppingCart({openSnackBar}: ShoppingCartProps) {
                 setCart((prevCart) => {
                     if (prevCart) {
                         const updatedProducts = prevCart.products.filter(product => product.productId !== productId);
-                        openSnackBar('Successfully removed product from cart.', 'success')
-                        return new Cart(updatedProducts, calculateTotalPrice(updatedProducts));
+                        const updatedPrice = calculateTotalPrice(updatedProducts);
+                        openSnackBar('Successfully removed product from cart.', 'success');
+                        return new Cart(updatedProducts, updatedPrice);
                     } else {
                         return prevCart;
                     }
                 });
             }
         } catch (err) {
-            console.log(err)
-            openSnackBar('An error occurred deleting product from cart :(', 'error')
+            console.log(err);
+            openSnackBar('An error occurred deleting product from cart :(', 'error');
         } finally {
             setIsLoading(false);
         }
     }
 
     const calculateTotalPrice = (products: ProductCart[]) => {
-        return products.reduce((total, product) => total + (product.price * product.quantity), 0);
+        let total = 0;
+        products.forEach(product => {
+            const price = parseFloat(product.price.toString());
+            const quantity = parseFloat(product.quantity.toString());
+            total += price * quantity;
+        })
+
+        return total;
     };
+
 
     const fetchCart = async () => {
         setIsLoading(true)
