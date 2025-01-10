@@ -38,18 +38,17 @@ public class Product {
     private int availableAmount;
 
     @Column
-    @Lob
-    private byte[] image;
+    private String imageUrl;
 
     public ProductLightDto productToProductLightDto() {
-        return new ProductLightDto(getId(), getName(), getShortDescription(), getPrice());
+        return new ProductLightDto(getId(), getName(), getShortDescription(), getPrice(), getImageUrl());
     }
 
     public ProductDto productToProductDto() {
-        return new ProductDto(getName(), getShortDescription(), getAvailableAmount());
+        return new ProductDto(getName(), getShortDescription(), getAvailableAmount(), imageUrl);
     }
 
     public ProductFromOrderDto productToProductFromOrderDto(int quntity) {
-        return new ProductFromOrderDto(id, name, longDescription, price, image, quntity);
+        return new ProductFromOrderDto(id, name, longDescription, price, imageUrl, quntity);
     }
 }
