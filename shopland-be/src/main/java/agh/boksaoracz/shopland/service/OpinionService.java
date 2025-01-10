@@ -30,7 +30,7 @@ public class OpinionService {
 
     public List<OpinionDto> getOpinionsByProductId(Long productId) {
         if (!productRepository.existsById(productId)) {
-            throw new ProductNotFoundException(String.format("Can't fetch opinions for product with id=%s no exists.", productId));
+            throw new ProductNotFoundException(String.format("Can't fetch opinions for product with productId=%s no exists.", productId));
         }
 
         return opinionRepository.findAllByProductId(productId)
@@ -47,9 +47,9 @@ public class OpinionService {
         validateOpinionUpdating(command);
 
         var user = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundException(String.format("Can't find user with id=%s.", userId)));
+                new UserNotFoundException(String.format("Can't find user with productId=%s.", userId)));
         var product = productRepository.findById(productId).orElseThrow(() ->
-                new ProductNotFoundException(String.format("Can't find product with id=%s.", productId)));
+                new ProductNotFoundException(String.format("Can't find product with productId=%s.", productId)));
 
         var opinion = Opinion.builder()
                 .content(command.getContent())
@@ -66,7 +66,7 @@ public class OpinionService {
         validateOpinionUpdating(command);
         var opinion = opinionRepository.findById(opinionId)
                 .orElseThrow(() ->
-                        new OpinionDoesNotExistsException(String.format("Opinion with id=%s doesnt exist.", opinionId)));
+                        new OpinionDoesNotExistsException(String.format("Opinion with productId=%s doesnt exist.", opinionId)));
 
         if (!Objects.equals(opinion.getUser().getId(), userId)) {
             throw new OpinionException("Opinion doesn't belong to user!");
@@ -80,7 +80,7 @@ public class OpinionService {
     public void deleteOpinion(Long opinionId, Long userId) {
         var opinion = opinionRepository.findById(opinionId)
                 .orElseThrow(() ->
-                        new OpinionDoesNotExistsException(String.format("Opinion with id=%s doesnt exist.", opinionId)));
+                        new OpinionDoesNotExistsException(String.format("Opinion with productId=%s doesnt exist.", opinionId)));
 
         if (opinion.getUser().getRole() == UserRole.ADMIN) {
             opinionRepository.deleteById(opinionId);
