@@ -1,6 +1,6 @@
 import {ProductCart} from "./ProductCart.ts";
 
-class Cart {
+export class Cart {
     products: ProductCart[];
     totalPrice: number;
 

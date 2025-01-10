@@ -18,6 +18,7 @@ import {useNavigate} from 'react-router-dom';
 import {LoginPopup} from "./LoginPopup.tsx";
 import {RegisterPopup} from "./RegisterPopup.tsx";
 import {Alert, Snackbar} from "@mui/material";
+import {ShoppingCart} from "./ShoppingCart.tsx";
 
 
 const pages = [
@@ -117,6 +118,10 @@ export function AppHeader() {
                         </Box>
 
                         <Box sx={{flexGrow: 0, display: 'flex', alignItems: 'center'}}>
+                            {isUserLoggedIn && (
+                                <ShoppingCart></ShoppingCart>
+                            )}
+
                             {isUserLoggedIn && (
                                 <Typography
                                     sx={{
