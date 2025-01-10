@@ -12,6 +12,11 @@ interface Product {
 
 export function Home() {
     const [products, setProducts] = useState<Product[]>([]);
+    const [searchText, setSearchText] = useState<string>('');
+
+    const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(searchText.toLowerCase())
+    );
 
     async function fetchProducts() {
         const response = await fetch('http://localhost:8080/shopland/rest/api/products');
@@ -34,10 +39,12 @@ export function Home() {
                 variant="outlined"
                 fullWidth
                 sx={{ marginBottom: '1rem' }}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
             />
             <Grid2 container spacing={1}>
-                {products.length > 0 ? (
-                    products.slice(0, 21).map((product) => (
+                {filteredProducts.length > 0 ? (
+                    filteredProducts.slice(0, 21).map((product) => (
                         <Grid2 size={4} key={product.id}>
                             <ProductCard product={product} />
                         </Grid2>
