@@ -6,6 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 
 import {deleteOpinion, updateOpinion} from "../services/OpinionService.ts";
+// @ts-ignore
 import React, {useState} from "react";
 
 

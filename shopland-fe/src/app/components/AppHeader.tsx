@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {SetStateAction, useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -75,6 +75,12 @@ export function AppHeader() {
         setOpenSnackbar(true);
     }
 
+    const openSnackBar = (message: string, severity: SetStateAction<"error" | "success" | "info" | "warning">) => {
+        setSnackbarMessage(message);
+        setSeverity(severity);
+        setOpenSnackbar(true);
+    }
+
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false);
     };
@@ -119,7 +125,7 @@ export function AppHeader() {
 
                         <Box sx={{flexGrow: 0, display: 'flex', alignItems: 'center'}}>
                             {isUserLoggedIn && (
-                                <ShoppingCart></ShoppingCart>
+                                <ShoppingCart openSnackBar={openSnackBar}/>
                             )}
 
                             {isUserLoggedIn && (

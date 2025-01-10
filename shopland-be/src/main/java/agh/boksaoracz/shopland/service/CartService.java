@@ -98,7 +98,7 @@ public class CartService {
 
 
         var product = cart.get().getProduct();
-        product.setAvailableAmount(product.getAvailableAmount() - cart.get().getQuantity());
+        product.setAvailableAmount(product.getAvailableAmount() + cart.get().getQuantity());
         productRepository.save(product);
         cartRepository.deleteByUserIdAndProductId(userId, productId);
     }
