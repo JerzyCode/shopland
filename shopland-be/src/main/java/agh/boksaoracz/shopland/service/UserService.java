@@ -15,12 +15,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public void createUser(UserDto userDto) {
+        createUser(userDto, UserRole.USER);
+    }
+
+    public void createUser(UserDto userDto, UserRole role) {
         User user = new User();
         user.setEmail(userDto.email());
         user.setName(userDto.name());
         user.setSurname(userDto.surname());
         user.setPassword(passwordEncoder.encode(userDto.password()));
-        user.setRole(UserRole.USER);
+        user.setRole(role);
         userRepository.save(user);
     }
 
