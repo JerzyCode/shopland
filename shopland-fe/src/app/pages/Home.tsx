@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {Container, Grid2, TextField, Typography} from "@mui/material";
 import {ProductCard} from "../components/ProductCard.tsx";
 
@@ -27,6 +27,7 @@ export function Home() {
         console.log('Produkty:', data);
         setProducts(data);
     }
+
     useEffect(() => {
         fetchProducts();
     }, []);
@@ -38,7 +39,7 @@ export function Home() {
                 label="Wpisz coś"
                 variant="outlined"
                 fullWidth
-                sx={{ marginBottom: '1rem' }}
+                sx={{marginBottom: '1rem'}}
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
             />
@@ -46,7 +47,7 @@ export function Home() {
                 {filteredProducts.length > 0 ? (
                     filteredProducts.slice(0, 21).map((product) => (
                         <Grid2 size={4} key={product.id}>
-                            <ProductCard product={product} />
+                            <ProductCard product={product}/>
                         </Grid2>
                     ))
                 ) : (

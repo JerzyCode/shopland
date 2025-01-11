@@ -79,22 +79,24 @@ export function OpinionCard({
         }
     };
 
+    const editButtonRight = shouldDeleteBeVisible ? 40 : 8
+
 
     return (
         <Card
             sx={{
+                minWidth: '60vw',
                 backgroundColor: '#ffffff',
                 borderRadius: 2,
                 boxShadow: 3,
                 marginBottom: 2,
-                width: '750px',
+                width: '100%',
                 minHeight: '50px',
                 display: 'flex',
                 flexDirection: 'column',
             }}
         >
             <CardContent>
-
                 {shouldEditBeVisible &&
                     <>
                         {!isEditing ?
@@ -103,7 +105,7 @@ export function OpinionCard({
                                 sx={{
                                     position: 'absolute',
                                     top: 8,
-                                    right: 40,
+                                    right: editButtonRight,
                                     color: '#6a1b9a',
                                     '&:hover': {
                                         color: '#3e1a69',
@@ -118,7 +120,7 @@ export function OpinionCard({
                                 sx={{
                                     position: 'absolute',
                                     top: 8,
-                                    right: 40,
+                                    right: editButtonRight,
                                     color: '#83e316',
                                     '&:hover': {
                                         color: '#3e1a69',

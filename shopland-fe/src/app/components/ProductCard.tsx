@@ -30,7 +30,7 @@ export function ProductCard({ product }: ProductComponentProps) {
                        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
                    }
                }}
-               onClick={() => navigate(`/product/${product.id}`)}
+               onClick={() => navigate(`/shopland/product/${product.id}`)}
         >
             <Typography
                 variant="h6"
