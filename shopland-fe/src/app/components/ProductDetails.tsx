@@ -4,6 +4,9 @@ import {Box, Button, CircularProgress, Paper, Stack, Typography, ListItem} from 
 import {OpinionCard} from './OpinionCard';
 import {useAuth} from "../context/AuthContext.tsx";
 import {Role} from "../models/User.ts";
+import {getProductDetails} from "../services/ProductService.ts";
+import {getOpinionsForProduct} from "../services/OpinionService.ts";
+import {addProductToCart} from "../services/CartService.ts";
 
 interface Product {
     name: string;
@@ -30,54 +33,53 @@ export function ProductDetails() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const productResponse = await fetch(`http://localhost:8080/shopland/rest/api/products/${id}`);
-                if (!productResponse.ok) throw new Error('Produkt nie został znaleziony');
-
-                const productData = await productResponse.json();
-                setProduct(productData);
-
-                const opinionResponse = await fetch(`http://localhost:8080/shopland/rest/api/opinion/products/${id}`);
-                if (!opinionResponse.ok) throw new Error('Nie udało się pobrać opinii');
-
-                const opinionData = await opinionResponse.json();
-                setOpinions(opinionData);
-            } catch (err: any) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchProduct();
+        fetchOpinions();
     }, [id]);
 
-    const addToCart = async () => {
-        const cartProductCommand = {
-            productId: Number(id),
-            quantity: 1,
-        };
-
+    const fetchProduct = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8080/shopland/rest/api/cart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user?.jwtToken}`,
-                },
-                body: JSON.stringify(cartProductCommand),
-            });
-
-            if (!response.ok) {
-                throw new Error('Nie udało się dodać produktu do koszyka');
+            const response = await getProductDetails(Number(id));
+            if (response.status === 200) {
+                setProduct(response.body);
+            } else {
+                throw new Error(response.body?.message || 'Nie udało się pobrać danych produktu');
             }
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-            const data = await response.json();
-            console.log('Produkt dodany do koszyka', data);
-        } catch (error: any) {
-            setError(error.message);
+    const fetchOpinions = async () => {
+        setLoading(true);
+        try {
+            const response = await getOpinionsForProduct(Number(id));
+            if (response.status === 200) {
+                setOpinions(response.body);
+            } else {
+                throw new Error(response.body?.message || 'Nie udało się pobrać opinii');
+            }
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const addToCart = async () => {
+        setLoading(true);
+        try {
+            const response = await addProductToCart(Number(id), 1);
+            if (response.status === 200) {
+                console.log('Produkt dodany do koszyka:', response.body);
+            } else {
+                throw new Error(response.body?.message || 'Nie udało się dodać produktu do koszyka');
+            }
+        } catch (err: any) {
+            setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -115,7 +117,7 @@ export function ProductDetails() {
     }
 
     if (!product) {
-        return <Typography>Produkt nie został znaleziony.</Typography>;
+        return <Typography>Product not found.</Typography>;
     }
 
     return (
