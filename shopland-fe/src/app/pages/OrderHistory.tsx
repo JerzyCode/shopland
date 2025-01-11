@@ -3,11 +3,13 @@ import { Box, CircularProgress, Container, List, ListItem, Typography } from "@m
 import { getOrderHistory } from "../services/OrderService";
 import { Order } from "../models/Order";
 import { OrderCard } from "../components/OrderCard";
+import {useNavigate} from "react-router-dom";
 
 export function OrderHistory() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -31,8 +33,7 @@ export function OrderHistory() {
     }, []);
 
     const onOrderClick = (orderId: number) => {
-        // Tu możesz dodać logikę przekierowania do szczegółów zamówienia
-        console.log("Redirect to order details:", orderId);
+        navigate(`/shopland/order/${orderId}`)
     }
 
     return (
