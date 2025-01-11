@@ -64,7 +64,7 @@ export function ProductDetails() {
             if (response.status === 200) {
                 setOpinions(response.body)
             } else {
-                setError('Unknown Error Occured');
+                setError('Unknown Error Occurred');
             }
         } catch (err: any) {
             setError(err.message);
@@ -102,23 +102,6 @@ export function ProductDetails() {
         }
     };
 
-    const handleDeleteOpinion = async (opinionId: number) => {
-        try {
-            const response = await fetch(`http://localhost:8080/shopland/rest/api/opinion/products/${id}/${opinionId}`, {
-                method: 'DELETE',
-            });
-
-            if (!response.ok) {
-                throw new Error('Nie udało się usunąć opinii');
-            }
-
-            setOpinions(prevOpinions => prevOpinions.filter(opinion => opinion.id !== opinionId));
-        } catch (err: any) {
-            setError('Błąd podczas usuwania opinii');
-        }
-    };
-
-
     const calculateAverageRating = (opinions: Opinion[]) => {
         if (opinions.length === 0) return 0;
         const totalRating = opinions.reduce((acc, opinion) => acc + opinion.value, 0);
@@ -126,10 +109,7 @@ export function ProductDetails() {
     };
 
 
-    const handleOpenAddOpinionPopup = () => {
-        setAddOpinionPopupOpened(true);
-        console.log('handleOpenAddOpinionPopup')
-    }
+    const handleOpenAddOpinionPopup = () => setAddOpinionPopupOpened(true);
     const handleCloseAddOpinionPopup = () => setAddOpinionPopupOpened(false);
 
 
@@ -242,7 +222,7 @@ export function ProductDetails() {
                                             usernameVisible={true}
                                             shouldDeleteBeVisible={user?.role === Role.ADMIN}
                                             shouldEditBeVisible={user?.role === Role.USER && opinion.userEmail === user?.email}
-                                            onDeleteOpinion={handleDeleteOpinion}
+                                            onDeleteOpinion={loadOpinions}
                                         />
                                         <div style={{borderBottom: '1px solid #ccc', margin: '10px 0'}}/>
                                     </ListItem>

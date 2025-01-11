@@ -80,10 +80,13 @@ public class OpinionService {
     public void deleteOpinion(Long opinionId, Long userId) {
         var opinion = opinionRepository.findById(opinionId)
                 .orElseThrow(() ->
-                        new OpinionDoesNotExistsException(String.format("Opinion with productId=%s doesnt exist.", opinionId)));
+                        new OpinionDoesNotExistsException(String.format("Opinion with opinionId=%s doesnt exist.", opinionId)));
 
-        if (opinion.getUser().getRole() == UserRole.ADMIN) {
+        var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found."));
+
+        if (user.getRole() == UserRole.ADMIN) {
             opinionRepository.deleteById(opinionId);
+            return;
         }
 
         if (!Objects.equals(opinion.getUser().getId(), userId)) {
