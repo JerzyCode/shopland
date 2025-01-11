@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {Box, Button, CircularProgress, Paper, Stack, Typography, ListItem} from '@mui/material';
-import {OpinionCard} from './OpinionCard';
+import {OpinionCard} from '../components/OpinionCard.tsx';
 import {useAuth} from "../context/AuthContext.tsx";
 import {Role} from "../models/User.ts";
 import {getProductDetails} from "../services/ProductService.ts";
