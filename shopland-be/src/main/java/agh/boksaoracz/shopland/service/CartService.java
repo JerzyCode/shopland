@@ -65,7 +65,7 @@ public class CartService {
         Cart existingCart = cartRepository.findByUserIdAndProductId(userId, productId).orElse(null);
 
         if (existingCart != null) {
-            existingCart.setQuantity(quantity);
+            existingCart.setQuantity(quantity + existingCart.getQuantity());
             cartRepository.save(existingCart);
             return existingCart.cartToProductCartDto();
         } else {
