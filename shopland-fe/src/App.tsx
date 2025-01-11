@@ -7,7 +7,7 @@ import {AppHeader} from "./app/components/AppHeader.tsx";
 import {Container} from "@mui/material";
 import {OrderHistory} from "./app/pages/OrderHistory.tsx";
 import {OpinionsPage} from "./app/pages/OpinionsPage.tsx";
-import {ProductDetails} from "./app/components/ProductDetails.tsx";
+import {ProductDetails} from "./app/pages/ProductDetails.tsx";
 
 
 function App() {

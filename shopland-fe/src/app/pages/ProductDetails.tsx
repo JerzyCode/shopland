@@ -75,6 +75,14 @@ export function ProductDetails() {
             const response = await addProductToCart(Number(id), 1);
             if (response.status === 200) {
                 console.log('Produkt dodany do koszyka:', response.body);
+                setProduct(prevProduct => {
+                    if (!prevProduct || prevProduct.availableAmount <= 0) return prevProduct;
+
+                    return {
+                        ...prevProduct,
+                        availableAmount: prevProduct.availableAmount - 1,
+                    };
+                });
             } else {
                 throw new Error(response.body?.message || 'Nie udało się dodać produktu do koszyka');
             }
