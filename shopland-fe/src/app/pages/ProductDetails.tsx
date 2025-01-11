@@ -7,7 +7,7 @@ import {Role} from "../models/User.ts";
 import {getProductDetails} from "../services/ProductService.ts";
 import {getOpinionsForProduct} from "../services/OpinionService.ts";
 import {addProductToCart} from "../services/CartService.ts";
-import {AddOpinionPopup} from "./AddOpinionPopup.tsx";
+import {AddOpinionPopup} from "../components/AddOpinionPopup.tsx";
 
 interface Product {
     name: string;
@@ -108,7 +108,7 @@ export function ProductDetails() {
         } catch (err: any) {
             setError(err.message);
         } finally {
-            //TODO decrement available amount product
+            setLoading(false);
         }
     };
 
