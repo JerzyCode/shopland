@@ -23,7 +23,7 @@ public class LoadDatabaseService {
 
     public void loadProductsToDatabase() {
         if (productRepository.count() > 0) {
-            log.error("Not loading products, they are already loaded!");
+            log.info("Not loading products, they are already loaded!");
             return;
         }
         var response = restTemplate.exchange(

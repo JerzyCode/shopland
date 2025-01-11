@@ -23,7 +23,7 @@ function App() {
                            element={<RoleProtectedRoute element={<OpinionsPage/>} requiredRole={Role.USER}/>}/>
                     <Route path="*" element={<Navigate to="/shopland"/>}/>
                     <Route path="/shopland/order-history" element={<OrderHistory/>}/>
-                    <Route path="/product/:id" element={<ProductDetails />} />
+                    <Route path="/shopland/product/:id" element={<ProductDetails />} />
                 </Routes>
             </Container>
         </div>
