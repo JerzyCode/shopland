@@ -1,4 +1,4 @@
 package agh.boksaoracz.shopland.model.dto;
 
-public record ProductDto(String name, String description, int availableAmount, String imageUrl) {
+public record ProductDto(String name, String description, int availableAmount, String imageUrl, double price) {
 }

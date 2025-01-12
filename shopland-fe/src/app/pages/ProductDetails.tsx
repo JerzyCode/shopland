@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
-import {Box, Button, CircularProgress, Paper, Stack, Typography, ListItem} from '@mui/material';
+import {Box, Button, CircularProgress, ListItem, Paper, Stack, Typography} from '@mui/material';
 import {OpinionCard} from '../components/OpinionCard.tsx';
 import {useAuth} from "../context/AuthContext.tsx";
 import {Role} from "../models/User.ts";
@@ -14,6 +14,7 @@ interface Product {
     description: string | null;
     availableAmount: number;
     imageUrl: string;
+    price: number;
 }
 
 interface Opinion {
@@ -47,7 +48,7 @@ export function ProductDetails() {
             if (response.status === 200) {
                 setProduct(response.body);
             } else {
-                throw new Error(response.body?.message || 'Nie udało się pobrać danych produktu');
+                throw new Error(response.body?.message || "Couldn't load product data.");
             }
         } catch (err: any) {
             setError(err.message);
@@ -63,7 +64,7 @@ export function ProductDetails() {
             if (response.status === 200) {
                 setOpinions(response.body);
             } else {
-                throw new Error(response.body?.message || 'Nie udało się pobrać opinii');
+                throw new Error(response.body?.message || "Couldn't load opinions.");
             }
         } catch (err: any) {
             setError(err.message);
@@ -89,11 +90,9 @@ export function ProductDetails() {
     }
 
     const addToCart = async () => {
-        setLoading(true);
         try {
             const response = await addProductToCart(Number(id), 1);
             if (response.status === 200) {
-                console.log('Produkt dodany do koszyka:', response.body);
                 setProduct(prevProduct => {
                     if (!prevProduct || prevProduct.availableAmount <= 0) return prevProduct;
 
@@ -103,12 +102,10 @@ export function ProductDetails() {
                     };
                 });
             } else {
-                throw new Error(response.body?.message || 'Nie udało się dodać produktu do koszyka');
+                throw new Error(response.body?.message || "Couldn't add product to cart.");
             }
         } catch (err: any) {
             setError(err.message);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -162,10 +159,14 @@ export function ProductDetails() {
                         </Box>
                     )}
                     <Typography variant="subtitle1" color="textSecondary" sx={{textAlign: 'center'}}>
-                        {product.description || 'Brak opisu'}
+                        {product.description || 'No description'}
                     </Typography>
                     <Typography variant="h6" color="primary" sx={{marginTop: 2}}>
-                        Dostępna ilość: {product.availableAmount}
+                        Available Amount: {product.availableAmount}
+                    </Typography>
+
+                    <Typography variant="h6" color="primary" sx={{marginTop: 2}}>
+                        Price: {product.price}
                     </Typography>
 
                     <Box
@@ -188,7 +189,7 @@ export function ProductDetails() {
                             disabled={!(user?.hasRole(Role.USER) || user?.hasRole(Role.ADMIN)) || product.availableAmount <= 0}
                             onClick={addToCart}
                         >
-                            {(user?.hasRole(Role.USER) || user?.hasRole(Role.ADMIN)) ? 'Dodaj do koszyka' : 'Zaloguj się, aby dodać do koszyka'}
+                            {(user?.hasRole(Role.USER) || user?.hasRole(Role.ADMIN)) ? 'Add to Cart' : 'Login to add to cart'}
                         </Button>
                         {(user?.hasRole(Role.USER) || user?.hasRole(Role.ADMIN)) && (
                             <Button
@@ -210,7 +211,7 @@ export function ProductDetails() {
                     </Box>
                 </Paper>
 
-                <Typography variant="h5">Średnia ocena: {calculateAverageRating(opinions)} / 5</Typography>
+                <Typography variant="h5">Average score: {calculateAverageRating(opinions)} / 5</Typography>
 
                 {opinionsLoading ? (
                     <Box display="flex"
@@ -239,7 +240,7 @@ export function ProductDetails() {
                                 ))}
                             </Stack>
                         ) : (
-                            <Typography>Brak opinii o tym produkcie.</Typography>
+                            <Typography>No opinions about this products.</Typography>
                         )}
                     </>
                 )}

@@ -58,7 +58,7 @@ export const deleteProductFromCart = async (productId: number) => {
 export const addProductToCart = async (productId: number, quantity: number): Promise<ServerResponse> => {
     const user = getUser();
     if (user === undefined || user?.role === Role.GUEST) {
-        return new ServerResponse(400, { message: 'User wrong token!' });
+        return new ServerResponse(400, {message: 'User wrong token!'});
     }
 
     const cartProductCommand = {
@@ -80,7 +80,32 @@ export const addProductToCart = async (productId: number, quantity: number): Pro
             return new ServerResponse(error.response?.status || 500, error.response?.data);
         } else {
             console.error(error);
-            return new ServerResponse(500, { message: 'Unknown error occurred' });
+            return new ServerResponse(500, {message: 'Unknown error occurred'});
+        }
+    }
+};
+
+export const acceptCart = async (): Promise<ServerResponse> => {
+    const user = getUser();
+    if (user === undefined || user?.role === Role.GUEST) {
+        return new ServerResponse(400, {message: 'User wrong token!'});
+    }
+
+    try {
+        const response = await axios.post(URL + '/accept',{}, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user?.jwtToken}`,
+            },
+        });
+
+        return new ServerResponse(response.status, {message: ''});
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            return new ServerResponse(error.response?.status || 500, error.response?.data);
+        } else {
+            console.error(error);
+            return new ServerResponse(500, {message: 'Unknown error occurred'});
         }
     }
 };

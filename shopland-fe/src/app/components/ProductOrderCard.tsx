@@ -60,7 +60,7 @@ export function ProductOrderCard({ productOrder }: ProductOrderProps) {
                 )}
             </Box>
             <Typography variant="subtitle1" color="primary">
-                {productOrder.unitPrice.toFixed(2)} zł
+                {productOrder.unitPrice.toFixed(2)} $
             </Typography>
             <Typography variant="body2" color="textSecondary">
                 Purchased Quantity: {productOrder.quantity}

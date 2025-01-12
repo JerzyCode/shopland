@@ -68,7 +68,7 @@ export function OrderDetails() {
                 Order #{orderDetails.orderId}
             </Typography>
             <Typography variant="h6" color="primary" gutterBottom>
-                Total Price: {orderDetails.totalPrice.toFixed(2)} zł
+                Total Price: {orderDetails.totalPrice.toFixed(2)} $
             </Typography>
 
             {orderDetails.products.map((productOrder: ProductOrder) => (
