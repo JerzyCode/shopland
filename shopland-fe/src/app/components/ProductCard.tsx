@@ -69,7 +69,7 @@ export function ProductCard({ product }: ProductComponentProps) {
                 )}
             </Box>
             <Typography variant="subtitle1" color="primary">
-                {product.price.toFixed(2)} zł
+                {product.price.toFixed(2)} $
             </Typography>
         </Paper>
     );
