@@ -31,7 +31,6 @@ function CartItem({product, onDeleteProduct}: ProductCartProps) {
 
     const handleProductNameClick = () => {
         navigate(`/shopland/product/${product.productId}`);
-        console.log(`Navigating to /product/${product.productId}`);
     }
 
     return (
@@ -71,7 +70,7 @@ function CartItem({product, onDeleteProduct}: ProductCartProps) {
                         Quantity: {product.quantity}
                     </Typography>
                     <Typography variant="body2" sx={{textAlign: 'right'}}>
-                        Price: {product.price} $
+                        Price: {(product.quantity * product.price).toFixed(2)} $
                     </Typography>
                 </Box>
             </Box>
@@ -84,6 +83,8 @@ export function ShoppingCart({openSnackBar}: ShoppingCartProps) {
     const [cart, setCart] = useState<Cart | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const isOpen = Boolean(anchorEl);
+    const navigate = useNavigate();
+
 
     const handleOpen = (event: any) => {
         setAnchorEl(event.currentTarget);
@@ -96,7 +97,7 @@ export function ShoppingCart({openSnackBar}: ShoppingCartProps) {
 
 
     const handleGoToPayment = () => {
-        console.log('Go To Payment')
+        navigate(`/shopland/payment`);
     }
 
     const handleDeleteProduct = async (productId: number) => {
@@ -122,15 +123,18 @@ export function ShoppingCart({openSnackBar}: ShoppingCartProps) {
         }
     }
 
-    const calculateTotalPrice = (products: ProductCart[]) => {
+    const calculateTotalPrice = (products: ProductCart[] | undefined) => {
         let total = 0;
+        if (!products) {
+            return 0;
+        }
         products.forEach(product => {
             const price = parseFloat(product.price.toString());
             const quantity = parseFloat(product.quantity.toString());
             total += price * quantity;
         })
 
-        return total;
+        return parseFloat(total.toFixed(2));
     };
 
 
@@ -214,7 +218,8 @@ export function ShoppingCart({openSnackBar}: ShoppingCartProps) {
                 )}
 
                 <div style={{padding: "16px", borderTop: "1px solid #ccc"}}>
-                    <Typography sx={{pb: 2}} variant="body2">Summary: {cart?.totalPrice} $</Typography>
+                    <Typography sx={{pb: 2}}
+                                variant="body2">Summary: {calculateTotalPrice(cart?.products)} $</Typography>
                     <Button
                         variant="contained"
                         color="primary"

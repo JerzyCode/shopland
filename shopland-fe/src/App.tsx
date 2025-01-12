@@ -9,6 +9,7 @@ import {OrderHistory} from "./app/pages/OrderHistory.tsx";
 import {OpinionsPage} from "./app/pages/OpinionsPage.tsx";
 import {ProductDetails} from "./app/pages/ProductDetails.tsx";
 import {OrderDetails} from "./app/pages/OrderDetails.tsx";
+import {CartSummaryPage} from "./app/pages/CartSummaryPage.tsx";
 
 
 function App() {
@@ -23,9 +24,13 @@ function App() {
                     <Route path="/shopland/opinions"
                            element={<RoleProtectedRoute element={<OpinionsPage/>} requiredRole={Role.USER}/>}/>
                     <Route path="*" element={<Navigate to="/shopland"/>}/>
-                    <Route path="/shopland/order-history" element={<OrderHistory/>}/>
-                    <Route path="/shopland/product/:id" element={<ProductDetails />} />
-                    <Route path="/shopland/order/:id" element={<OrderDetails />} />
+                    <Route path="/shopland/order-history"
+                           element={<RoleProtectedRoute element={<OrderHistory/>} requiredRole={Role.USER}/>}/>
+                    <Route path="/shopland/product/:id" element={<ProductDetails/>}/>
+                    <Route path="/shopland/order/:id"
+                           element={<RoleProtectedRoute element={<OrderDetails/>} requiredRole={Role.USER}/>}/>
+                    <Route path="/shopland/payment"
+                           element={<RoleProtectedRoute element={<CartSummaryPage/>} requiredRole={Role.USER}/>}/>
                 </Routes>
             </Container>
         </div>

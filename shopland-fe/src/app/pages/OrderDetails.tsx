@@ -5,7 +5,7 @@ export function OrderDetails() {
 
     return (
         <>
-            <Typography variant="h4">Szczegóły zamówienia</Typography>
+            <Typography variant="h4">Order Details</Typography>
         </>
     )
 }
