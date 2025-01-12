@@ -35,7 +35,7 @@ public class Cart {
     private Integer quantity;
 
     public ProductCartDto cartToProductCartDto() {
-        return new ProductCartDto(product.getId(), product.getName(), quantity, product.getPrice() * quantity);
+        return new ProductCartDto(product.getId(), product.getName(), quantity, product.getPrice(), product.getImageUrl());
     }
 
 }

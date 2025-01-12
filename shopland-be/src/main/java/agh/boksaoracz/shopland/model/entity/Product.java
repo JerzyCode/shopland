@@ -45,7 +45,7 @@ public class Product {
     }
 
     public ProductDto productToProductDto() {
-        return new ProductDto(getName(), getLongDescription(), getAvailableAmount(), imageUrl);
+        return new ProductDto(getName(), getLongDescription(), getAvailableAmount(), imageUrl, price);
     }
 
     public ProductFromOrderDto productToProductFromOrderDto(int quntity) {
