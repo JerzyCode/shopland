@@ -24,8 +24,6 @@ function App() {
                     <Route path="/shopland/opinions"
                            element={<RoleProtectedRoute element={<OpinionsPage/>} requiredRole={Role.USER}/>}/>
                     <Route path="*" element={<Navigate to="/shopland"/>}/>
-                    <Route path="/shopland/order-history"
-                           element={<RoleProtectedRoute element={<OrderHistory/>} requiredRole={Role.USER}/>}/>
                     <Route path="/shopland/product/:id" element={<ProductDetails/>}/>
                     <Route path="/shopland/order/:id"
                            element={<RoleProtectedRoute element={<OrderDetails/>} requiredRole={Role.USER}/>}/>
