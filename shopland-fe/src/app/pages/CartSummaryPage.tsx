@@ -7,7 +7,6 @@ import {
     Container,
     Dialog,
     DialogActions,
-    DialogContent,
     DialogTitle,
     List,
     Typography
@@ -154,9 +153,6 @@ export function CartSummaryPage() {
                 onClose={handleCloseDialog}
             >
                 <DialogTitle>Are you sure you want to proceed with the payment?</DialogTitle>
-                <DialogContent>
-                    {/* Możesz dodać dodatkowy tekst lub informacje tutaj */}
-                </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDialog} color="primary">
                         No
