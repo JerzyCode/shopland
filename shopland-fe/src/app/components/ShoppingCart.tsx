@@ -97,7 +97,9 @@ export function ShoppingCart({openSnackBar}: ShoppingCartProps) {
 
 
     const handleGoToPayment = () => {
-        navigate(`/shopland/payment`);
+        if (!cart?.products || cart?.products.length > 0) {
+            navigate(`/shopland/payment`);
+        }
     }
 
     const handleDeleteProduct = async (productId: number) => {
@@ -153,6 +155,7 @@ export function ShoppingCart({openSnackBar}: ShoppingCartProps) {
     }
 
 
+    // @ts-ignore
     return (
         <div>
             <IconButton onClick={handleOpen}>
@@ -223,7 +226,7 @@ export function ShoppingCart({openSnackBar}: ShoppingCartProps) {
                     <Button
                         variant="contained"
                         color="primary"
-                        disabled={isLoading}
+                        disabled={(isLoading || !cart?.products || 0 >= cart?.products.length)}
                         fullWidth
                         sx={{
                             backgroundColor: "#6a1b9a"

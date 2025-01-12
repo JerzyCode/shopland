@@ -170,7 +170,7 @@ export function CartSummaryPage() {
             <Button
                 variant="contained"
                 color="primary"
-                disabled={isLoading}
+                disabled={(isLoading || !cart?.products || 0 >= cart?.products.length)}
                 fullWidth
                 sx={{
                     marginTop: '15px',
