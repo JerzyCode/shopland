@@ -155,6 +155,13 @@ All operations are performed on spring boot backend application.
 - Component Library
 - Dockerized application
 
+## Postman Documentation
+
+You can find detailed information on how to use Postman in the following documentation link:
+
+[Postman Documentation](https://documenter.getpostman.com/view/37233656/2sAYQWLZZH)
+
+
 ## Authors:
 - **Jerzy Boksa**
 - **Mateusz Oracz**
